@@ -3,1126 +3,983 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0a0c0f">
-<title>UberKM — Reserva de Manutenção</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#080a0e">
+<meta name="color-scheme" content="dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>UberKM</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap');
 
-html { background: #0a0c0f; }
-:root {
-–bg: #0a0c0f;
-–surface: #111318;
-–surface2: #181c23;
-–border: #1f2530;
-–accent: #e8ff47;
-–accent2: #ff6b35;
-–accent3: #47c9ff;
-–uber: #06c167;
-–nov99: #f5a623;
-–indrive: #a259ff;
-–text: #e8eaf0;
-–muted: #5a6070;
-–danger: #ff4757;
-–success: #2ecc71;
+html, body {
+background: #080a0e !important;
+color-scheme: dark;
 }
 
-- { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+–bg:       #080a0e;
+–s1:       #0f1218;
+–s2:       #161b24;
+–s3:       #1d2330;
+–border:   #232b38;
+–accent:   #c8f000;
+–orange:   #ff6b35;
+–blue:     #3db8ff;
+–uber:     #06c167;
+–nov99:    #f5a623;
+–indrive:  #9b59ff;
+–text:     #dde2ec;
+–muted:    #4a5568;
+–danger:   #ff4757;
+–success:  #00d68f;
+–radius:   14px;
+}
+
+- { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
 body {
 background: var(–bg);
 color: var(–text);
 font-family: ‘Syne’, sans-serif;
-min-height: 100vh;
+min-height: 100dvh;
 overflow-x: hidden;
+padding-bottom: env(safe-area-inset-bottom);
 }
 
-body::before {
-content: ‘’;
-position: fixed;
-inset: 0;
-background-image:
-linear-gradient(rgba(232,255,71,0.03) 1px, transparent 1px),
-linear-gradient(90deg, rgba(232,255,71,0.03) 1px, transparent 1px);
-background-size: 40px 40px;
-pointer-events: none;
-z-index: 0;
+body::after {
+content:’’;
+position:fixed;
+inset:0;
+background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘0.03’/%3E%3C/svg%3E”);
+pointer-events:none;
+z-index:0;
+opacity:.4;
 }
 
-.wrapper {
-position: relative;
-z-index: 1;
-max-width: 960px;
-margin: 0 auto;
-padding: 24px 16px 80px;
+.wrap {
+position:relative;
+z-index:1;
+max-width:640px;
+margin:0 auto;
+padding:20px 16px 100px;
 }
 
 header {
-display: flex;
-align-items: flex-end;
-justify-content: space-between;
-margin-bottom: 40px;
-padding-bottom: 20px;
-border-bottom: 1px solid var(–border);
+display:flex;
+align-items:flex-start;
+justify-content:space-between;
+margin-bottom:28px;
+padding-bottom:20px;
+border-bottom:1px solid var(–border);
 }
 
-.logo-tag {
-font-family: ‘Space Mono’, monospace;
-font-size: 10px;
-color: var(–accent);
-letter-spacing: 4px;
-text-transform: uppercase;
-margin-bottom: 4px;
+.logo-eyebrow {
+font-family:‘Space Mono’,monospace;
+font-size:9px;
+letter-spacing:4px;
+color:var(–accent);
+text-transform:uppercase;
+margin-bottom:4px;
 }
 
-.logo-title {
-font-size: 32px;
-font-weight: 800;
-line-height: 1;
-letter-spacing: -1px;
+.logo-name {
+font-size:36px;
+font-weight:800;
+letter-spacing:-2px;
+line-height:1;
+color:var(–text);
 }
 
-.logo-title span { color: var(–accent); }
+.logo-name em { color:var(–accent); font-style:normal; }
 
-.header-date {
-font-family: ‘Space Mono’, monospace;
-font-size: 11px;
-color: var(–muted);
-text-align: right;
-line-height: 1.8;
+.header-meta {
+text-align:right;
+font-family:‘Space Mono’,monospace;
+font-size:10px;
+color:var(–muted);
+line-height:1.9;
 }
 
-.tabs {
-display: flex;
-gap: 4px;
-margin-bottom: 28px;
-background: var(–surface);
-border: 1px solid var(–border);
-border-radius: 10px;
-padding: 4px;
-overflow-x: auto;
+.tab-bar {
+display:flex;
+gap:3px;
+padding:4px;
+background:var(–s1);
+border:1px solid var(–border);
+border-radius:var(–radius);
+margin-bottom:24px;
+overflow-x:auto;
+scrollbar-width:none;
 }
+.tab-bar::-webkit-scrollbar { display:none; }
 
 .tab {
-flex: 1;
-min-width: 70px;
-padding: 10px 6px;
-text-align: center;
-font-family: ‘Space Mono’, monospace;
-font-size: 10px;
-letter-spacing: 1px;
-color: var(–muted);
-cursor: pointer;
-border-radius: 7px;
-transition: all .2s;
-border: none;
-background: transparent;
-text-transform: uppercase;
-white-space: nowrap;
+flex:1;
+min-width:64px;
+padding:9px 4px;
+text-align:center;
+font-family:‘Space Mono’,monospace;
+font-size:9px;
+letter-spacing:1px;
+text-transform:uppercase;
+color:var(–muted);
+background:transparent;
+border:none;
+border-radius:10px;
+cursor:pointer;
+transition:all .2s;
+white-space:nowrap;
 }
 
 .tab.active {
-background: var(–accent);
-color: #0a0c0f;
-font-weight: 700;
+background:var(–accent);
+color:#080a0e;
+font-weight:700;
 }
 
-.tab-content { display: none; }
-.tab-content.active { display: block; }
+.tab-content { display:none; }
+.tab-content.active { display:block; }
 
 .card {
-background: var(–surface);
-border: 1px solid var(–border);
-border-radius: 12px;
-padding: 24px;
-margin-bottom: 16px;
-position: relative;
-overflow: hidden;
+background:var(–s1);
+border:1px solid var(–border);
+border-radius:var(–radius);
+padding:20px;
+margin-bottom:14px;
+position:relative;
+overflow:hidden;
 }
 
-.card::before {
-content: ‘’;
-position: absolute;
-top: 0; left: 0;
-width: 3px;
-height: 100%;
-background: var(–accent);
+.card-accent { border-left:3px solid var(–accent); }
+.card-orange  { border-left:3px solid var(–orange); }
+.card-blue    { border-left:3px solid var(–blue); }
+.card-uber    { border-left:3px solid var(–uber); }
+
+.card-title {
+font-family:‘Space Mono’,monospace;
+font-size:9px;
+letter-spacing:3px;
+color:var(–muted);
+text-transform:uppercase;
+margin-bottom:18px;
+display:flex;
+align-items:center;
+gap:8px;
 }
 
-.card.accent2::before { background: var(–accent2); }
-.card.accent3::before { background: var(–accent3); }
-.card.c-uber::before  { background: var(–uber); }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.grid1 { display:grid; grid-template-columns:1fr; gap:12px; }
 
-.card-label {
-font-family: ‘Space Mono’, monospace;
-font-size: 10px;
-letter-spacing: 3px;
-color: var(–muted);
-text-transform: uppercase;
-margin-bottom: 16px;
-}
+@media(max-width:400px) { .grid2 { grid-template-columns:1fr; } }
 
-.form-grid {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 14px;
-}
-
-@media (max-width: 560px) {
-.form-grid { grid-template-columns: 1fr; }
-.logo-title { font-size: 24px; }
-}
-
-.field {
-display: flex;
-flex-direction: column;
-gap: 6px;
-}
+.field { display:flex; flex-direction:column; gap:5px; }
 
 .field label {
-font-family: ‘Space Mono’, monospace;
-font-size: 10px;
-color: var(–muted);
-letter-spacing: 1px;
-text-transform: uppercase;
-display: flex;
-align-items: center;
-gap: 6px;
+font-family:‘Space Mono’,monospace;
+font-size:9px;
+letter-spacing:1px;
+color:var(–muted);
+text-transform:uppercase;
+display:flex;
+align-items:center;
+gap:6px;
 }
 
-.label-badge {
-padding: 1px 6px;
-border-radius: 3px;
-font-size: 8px;
-font-weight: 700;
-letter-spacing: 1px;
+.chip {
+padding:2px 7px;
+border-radius:4px;
+font-size:8px;
+font-weight:700;
+letter-spacing:1px;
+}
+.chip-uber    { background:rgba(6,193,103,.15);  color:var(–uber); }
+.chip-99      { background:rgba(245,166,35,.15); color:var(–nov99); }
+.chip-indrive { background:rgba(155,89,255,.15); color:var(–indrive); }
+.chip-bonus   { background:rgba(200,240,0,.12);  color:var(–accent); }
+
+.field input {
+background:var(–s2) !important;
+border:1px solid var(–border);
+border-radius:10px;
+padding:12px 14px;
+color:var(–text) !important;
+font-family:‘Space Mono’,monospace;
+font-size:15px;
+outline:none;
+transition:border-color .2s, background .2s;
+width:100%;
+-webkit-appearance:none;
+appearance:none;
+color-scheme:dark;
 }
 
-.lb-uber   { background: rgba(6,193,103,.2);  color: var(–uber); }
-.lb-99     { background: rgba(245,166,35,.2); color: var(–nov99); }
-.lb-indrive{ background: rgba(162,89,255,.2); color: var(–indrive); }
-.lb-bonus  { background: rgba(232,255,71,.15);color: var(–accent); }
+.field input:focus  { border-color:var(–accent) !important; background:var(–s3) !important; }
+.field input::placeholder { color:var(–muted) !important; opacity:1; }
+.field input:-webkit-autofill { -webkit-box-shadow:0 0 0 100px var(–s2) inset !important; -webkit-text-fill-color:var(–text) !important; }
 
-.field input, .field select {
-background: var(–surface2);
-border: 1px solid var(–border);
-border-radius: 8px;
-padding: 10px 12px;
-color: var(–text);
-font-family: ‘Space Mono’, monospace;
-font-size: 14px;
-outline: none;
-transition: border-color .2s;
-width: 100%;
+.field input.sum-field {
+border-color:rgba(200,240,0,.3) !important;
+color:var(–accent) !important;
+font-weight:700;
 }
 
-.field input:focus { border-color: var(–accent); }
-.field input::placeholder { color: var(–muted); }
-.field input.readonly-sum {
-border-color: rgba(232,255,71,.3);
-color: var(–accent);
-opacity: .9;
-}
+.divider { border:none; border-top:1px solid var(–border); margin:16px 0; }
 
-.divider {
-border: none;
-border-top: 1px solid var(–border);
-margin: 16px 0;
-}
-
-/* APP COMPARISON */
-.app-bars { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
-
-.app-bar-row { display: flex; align-items: center; gap: 10px; }
-
-.app-bar-label {
-font-family: ‘Space Mono’, monospace;
-font-size: 10px;
-width: 60px;
-flex-shrink: 0;
-}
-
-.app-bar-track {
-flex: 1;
-height: 8px;
-background: var(–border);
-border-radius: 4px;
-overflow: hidden;
-}
-
-.app-bar-fill {
-height: 100%;
-border-radius: 4px;
-transition: width .6s ease;
-}
-
-.app-bar-val {
-font-family: ‘Space Mono’, monospace;
-font-size: 10px;
-width: 70px;
-text-align: right;
-flex-shrink: 0;
-}
-
-.winner-badge {
-display: inline-flex;
-align-items: center;
-gap: 4px;
-padding: 3px 10px;
-border-radius: 6px;
-font-family: ‘Space Mono’, monospace;
-font-size: 10px;
-font-weight: 700;
-letter-spacing: 1px;
-margin-top: 12px;
-}
-
-/* RESULTS */
 .result-grid {
-display: grid;
-grid-template-columns: repeat(3, 1fr);
-gap: 12px;
-margin-bottom: 16px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+margin-bottom:14px;
 }
 
-@media (max-width: 560px) { .result-grid { grid-template-columns: 1fr 1fr; } }
+@media(max-width:400px) { .result-grid { grid-template-columns:1fr 1fr; } }
 
-.result-box {
-background: var(–surface2);
-border: 1px solid var(–border);
-border-radius: 10px;
-padding: 16px;
-text-align: center;
+.rbox {
+background:var(–s2);
+border:1px solid var(–border);
+border-radius:12px;
+padding:14px 10px;
+text-align:center;
 }
 
-.result-box .r-label {
-font-family: ‘Space Mono’, monospace;
-font-size: 9px;
-color: var(–muted);
-letter-spacing: 2px;
-text-transform: uppercase;
-margin-bottom: 8px;
+.rbox-label {
+font-family:‘Space Mono’,monospace;
+font-size:8px;
+color:var(–muted);
+letter-spacing:2px;
+text-transform:uppercase;
+margin-bottom:8px;
+line-height:1.4;
 }
 
-.result-box .r-value {
-font-size: 22px;
-font-weight: 800;
-letter-spacing: -1px;
+.rbox-value {
+font-size:18px;
+font-weight:800;
+letter-spacing:-0.5px;
+line-height:1;
 }
 
-.r-value.green  { color: var(–success); }
-.r-value.yellow { color: var(–accent); }
-.r-value.orange { color: var(–accent2); }
-.r-value.blue   { color: var(–accent3); }
-.r-value.red    { color: var(–danger); }
+.c-green   { color:var(–success); }
+.c-yellow  { color:var(–accent); }
+.c-orange  { color:var(–orange); }
+.c-blue    { color:var(–blue); }
+.c-red     { color:var(–danger); }
+.c-muted   { color:var(–muted); }
 
-.reserve-bar-wrap {
-margin-top: 16px;
-background: var(–surface2);
-border-radius: 8px;
-padding: 16px;
-border: 1px solid var(–border);
+.prog-wrap {
+background:var(–s2);
+border:1px solid var(–border);
+border-radius:12px;
+padding:14px;
+margin-top:4px;
 }
 
-.bar-label {
-display: flex;
-justify-content: space-between;
-font-family: ‘Space Mono’, monospace;
-font-size: 10px;
-color: var(–muted);
-margin-bottom: 8px;
+.prog-header {
+display:flex;
+justify-content:space-between;
+font-family:‘Space Mono’,monospace;
+font-size:9px;
+color:var(–muted);
+margin-bottom:10px;
+flex-wrap:wrap;
+gap:4px;
 }
 
-.bar-track {
-height: 8px;
-background: var(–border);
-border-radius: 4px;
-overflow: hidden;
+.prog-track {
+height:6px;
+background:var(–border);
+border-radius:3px;
+overflow:hidden;
 }
 
-.bar-fill {
-height: 100%;
-border-radius: 4px;
-background: linear-gradient(90deg, var(–accent), var(–accent2));
-transition: width .6s ease;
+.prog-fill {
+height:100%;
+border-radius:3px;
+background:linear-gradient(90deg,var(–accent),var(–orange));
+transition:width .5s ease;
 }
 
-.btn {
-width: 100%;
-padding: 14px;
-background: var(–accent);
-color: #0a0c0f;
-border: none;
-border-radius: 10px;
-font-family: ‘Syne’, sans-serif;
-font-size: 14px;
-font-weight: 800;
-letter-spacing: 1px;
-text-transform: uppercase;
-cursor: pointer;
-transition: all .2s;
-margin-top: 4px;
+.app-bars { display:flex; flex-direction:column; gap:10px; }
+
+.app-row { display:flex; align-items:center; gap:10px; }
+
+.app-row-label {
+font-family:‘Space Mono’,monospace;
+font-size:10px;
+font-weight:700;
+width:58px;
+flex-shrink:0;
 }
 
-.btn:hover { opacity: .85; transform: translateY(-1px); }
-.btn.secondary {
-background: transparent;
-border: 1px solid var(–border);
-color: var(–text);
-font-weight: 700;
+.app-track {
+flex:1;
+height:7px;
+background:var(–border);
+border-radius:4px;
+overflow:hidden;
 }
 
-/* HISTORY */
-.history-table {
-width: 100%;
-border-collapse: collapse;
-font-family: ‘Space Mono’, monospace;
-font-size: 11px;
+.app-fill {
+height:100%;
+border-radius:4px;
+transition:width .5s ease;
 }
 
-.history-table th {
-color: var(–muted);
-text-align: left;
-padding: 8px 10px;
-border-bottom: 1px solid var(–border);
-letter-spacing: 1px;
-font-size: 9px;
-text-transform: uppercase;
+.app-row-val {
+font-family:‘Space Mono’,monospace;
+font-size:10px;
+width:74px;
+text-align:right;
+flex-shrink:0;
 }
 
-.history-table td {
-padding: 10px 10px;
-border-bottom: 1px solid rgba(255,255,255,.04);
-color: var(–text);
+.winner-pill {
+display:inline-flex;
+align-items:center;
+gap:6px;
+padding:6px 14px;
+border-radius:8px;
+font-family:‘Space Mono’,monospace;
+font-size:10px;
+font-weight:700;
+margin-top:14px;
+letter-spacing:.5px;
 }
 
-.history-table tr:hover td { background: rgba(255,255,255,.02); }
-
-.badge {
-display: inline-block;
-padding: 2px 8px;
-border-radius: 4px;
-font-size: 9px;
-font-weight: 700;
-letter-spacing: 1px;
+.hist-table {
+width:100%;
+border-collapse:collapse;
+font-family:‘Space Mono’,monospace;
+font-size:10px;
 }
 
-.badge-green { background: rgba(46,204,113,.15); color: var(–success); }
-.badge-red   { background: rgba(255,71,87,.15);  color: var(–danger); }
-
-.summary-grid {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 12px;
-margin-bottom: 16px;
+.hist-table th {
+color:var(–muted);
+text-align:left;
+padding:8px 8px;
+border-bottom:1px solid var(–border);
+font-size:8px;
+letter-spacing:1px;
+text-transform:uppercase;
 }
 
-.sum-box {
-background: var(–surface2);
-border: 1px solid var(–border);
-border-radius: 10px;
-padding: 16px;
+.hist-table td {
+padding:10px 8px;
+border-bottom:1px solid rgba(255,255,255,.03);
+vertical-align:middle;
+color:var(–text);
 }
 
-.sum-box .s-label {
-font-family: ‘Space Mono’, monospace;
-font-size: 9px;
-color: var(–muted);
-letter-spacing: 2px;
-text-transform: uppercase;
-margin-bottom: 6px;
+.hist-table tr:hover td { background:rgba(255,255,255,.02); }
+
+.pill {
+display:inline-block;
+padding:3px 9px;
+border-radius:5px;
+font-size:9px;
+font-weight:700;
 }
 
-.sum-box .s-value {
-font-size: 20px;
-font-weight: 800;
+.pill-green { background:rgba(0,214,143,.12); color:var(–success); }
+.pill-red   { background:rgba(255,71,87,.12);  color:var(–danger); }
+
+.del-btn {
+background:none;
+border:none;
+color:var(–danger);
+cursor:pointer;
+font-size:13px;
+opacity:.4;
+transition:opacity .2s;
+padding:4px;
+}
+.del-btn:hover { opacity:1; }
+
+.sum-grid {
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-bottom:14px;
 }
 
-.chart-wrap {
-position: relative;
-height: 200px;
-margin-top: 16px;
+.sbox {
+background:var(–s2);
+border:1px solid var(–border);
+border-radius:12px;
+padding:14px;
 }
 
-.period-selector {
-display: flex;
-gap: 6px;
-margin-bottom: 16px;
+.sbox-label {
+font-family:‘Space Mono’,monospace;
+font-size:8px;
+color:var(–muted);
+letter-spacing:2px;
+text-transform:uppercase;
+margin-bottom:6px;
 }
 
-.period-btn {
-padding: 6px 14px;
-border-radius: 6px;
-font-family: ‘Space Mono’, monospace;
-font-size: 10px;
-letter-spacing: 1px;
-cursor: pointer;
-border: 1px solid var(–border);
-background: transparent;
-color: var(–muted);
-transition: all .2s;
-text-transform: uppercase;
+.sbox-value { font-size:18px; font-weight:800; }
+
+.chart-wrap { position:relative; height:180px; margin-top:14px; }
+
+.period-row {
+display:flex;
+gap:6px;
+margin-bottom:16px;
 }
 
-.period-btn.active {
-background: var(–surface2);
-border-color: var(–accent);
-color: var(–accent);
+.pbtn {
+padding:7px 16px;
+border-radius:8px;
+font-family:‘Space Mono’,monospace;
+font-size:9px;
+letter-spacing:1px;
+cursor:pointer;
+border:1px solid var(–border);
+background:transparent;
+color:var(–muted);
+transition:all .2s;
+text-transform:uppercase;
+}
+
+.pbtn.active {
+background:var(–s2);
+border-color:var(–accent);
+color:var(–accent);
+}
+
+.btn-primary {
+width:100%;
+padding:15px;
+background:var(–accent);
+color:#080a0e;
+border:none;
+border-radius:12px;
+font-family:‘Syne’,sans-serif;
+font-size:14px;
+font-weight:800;
+letter-spacing:1px;
+text-transform:uppercase;
+cursor:pointer;
+transition:all .2s;
+margin-top:6px;
+}
+
+.btn-primary:active { transform:scale(.98); }
+
+.btn-ghost {
+width:100%;
+padding:13px;
+background:transparent;
+border:1px solid var(–border);
+color:var(–text);
+border-radius:12px;
+font-family:‘Syne’,sans-serif;
+font-size:13px;
+font-weight:700;
+cursor:pointer;
+transition:all .2s;
+margin-top:10px;
+}
+
+.btn-ghost:hover { border-color:var(–accent); color:var(–accent); }
+
+.hint {
+font-family:‘Space Mono’,monospace;
+font-size:9px;
+color:var(–muted);
+line-height:1.8;
+margin-top:14px;
+padding:12px;
+background:var(–s2);
+border-radius:10px;
+border:1px solid var(–border);
+}
+
+.empty {
+text-align:center;
+padding:40px 20px;
+font-family:‘Space Mono’,monospace;
+font-size:10px;
+color:var(–muted);
+line-height:2.2;
 }
 
 #toast {
-position: fixed;
-bottom: 24px;
-left: 50%;
-transform: translateX(-50%) translateY(80px);
-background: var(–accent);
-color: #0a0c0f;
-font-family: ‘Space Mono’, monospace;
-font-size: 12px;
-font-weight: 700;
-padding: 12px 24px;
-border-radius: 8px;
-z-index: 100;
-transition: transform .3s ease;
-letter-spacing: 1px;
+position:fixed;
+bottom:calc(24px + env(safe-area-inset-bottom));
+left:50%;
+transform:translateX(-50%) translateY(100px);
+background:var(–accent);
+color:#080a0e;
+font-family:‘Space Mono’,monospace;
+font-size:11px;
+font-weight:700;
+padding:12px 24px;
+border-radius:10px;
+z-index:999;
+transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+letter-spacing:1px;
+white-space:nowrap;
 }
 
-#toast.show { transform: translateX(-50%) translateY(0); }
-
-.del-btn {
-background: none;
-border: none;
-color: var(–danger);
-cursor: pointer;
-font-size: 12px;
-opacity: .5;
-transition: opacity .2s;
-}
-.del-btn:hover { opacity: 1; }
-
-.empty-state {
-text-align: center;
-padding: 40px 20px;
-font-family: ‘Space Mono’, monospace;
-font-size: 11px;
-color: var(–muted);
-line-height: 2;
-}
-
-.config-hint {
-font-family: ‘Space Mono’, monospace;
-font-size: 10px;
-color: var(–muted);
-margin-top: 12px;
-line-height: 1.6;
-}
+#toast.show { transform:translateX(-50%) translateY(0); }
 </style>
 
 </head>
 <body>
-<div id="toast">✓ Dia registrado!</div>
 
-<div class="wrapper">
+<div id="toast">✓ Salvo!</div>
+
+<div class="wrap">
+
   <header>
-    <div class="logo">
-      <span class="logo-tag">// motorista</span>
-      <h1 class="logo-title">Uber<span>KM</span></h1>
+    <div>
+      <div class="logo-eyebrow">// motorista</div>
+      <h1 class="logo-name">Uber<em>KM</em></h1>
     </div>
-    <div class="header-date" id="headerDate"></div>
+    <div class="header-meta" id="hDate"></div>
   </header>
 
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('registro', this)">Registrar</button>
-    <button class="tab" onclick="switchTab('historico', this)">Histórico</button>
-    <button class="tab" onclick="switchTab('relatorio', this)">Relatório</button>
-    <button class="tab" onclick="switchTab('apps', this)">Apps</button>
-    <button class="tab" onclick="switchTab('config', this)">Config</button>
+  <div class="tab-bar">
+    <button class="tab active" onclick="goTab('reg',this)">Registrar</button>
+    <button class="tab" onclick="goTab('hist',this)">Histórico</button>
+    <button class="tab" onclick="goTab('rel',this)">Relatório</button>
+    <button class="tab" onclick="goTab('apps',this)">Apps</button>
+    <button class="tab" onclick="goTab('cfg',this)">Config</button>
   </div>
 
-  <!-- TAB: REGISTRO -->
+  <!-- REGISTRAR -->
 
-  <div id="tab-registro" class="tab-content active">
+  <div id="tab-reg" class="tab-content active">
 
 ```
-<!-- GANHOS POR APP -->
-<div class="card c-uber">
-  <div class="card-label">💰 Ganhos por Plataforma</div>
-  <div class="form-grid">
+<div class="card card-uber">
+  <div class="card-title">💰 Ganhos por Plataforma</div>
+  <div class="grid2">
     <div class="field">
-      <label><span class="label-badge lb-uber">UBER</span> Ganhos Uber (R$)</label>
-      <input type="number" id="f-uber" placeholder="ex: 180.00" step="0.01" oninput="somarGanhos()">
+      <label><span class="chip chip-uber">UBER</span> Uber (R$)</label>
+      <input type="number" id="f-uber" inputmode="decimal" placeholder="0,00" oninput="somarGanhos()">
     </div>
     <div class="field">
-      <label><span class="label-badge lb-99">99</span> Ganhos 99 (R$)</label>
-      <input type="number" id="f-99" placeholder="ex: 80.00" step="0.01" oninput="somarGanhos()">
+      <label><span class="chip chip-99">99</span> 99 (R$)</label>
+      <input type="number" id="f-99" inputmode="decimal" placeholder="0,00" oninput="somarGanhos()">
     </div>
     <div class="field">
-      <label><span class="label-badge lb-indrive">INDRIVE</span> Ganhos inDrive (R$)</label>
-      <input type="number" id="f-indrive" placeholder="ex: 60.00" step="0.01" oninput="somarGanhos()">
+      <label><span class="chip chip-indrive">INDRIVE</span> inDrive (R$)</label>
+      <input type="number" id="f-ind" inputmode="decimal" placeholder="0,00" oninput="somarGanhos()">
     </div>
     <div class="field">
-      <label><span class="label-badge lb-bonus">BÔNUS</span> Bônus / Metas (R$)</label>
-      <input type="number" id="f-bonus" placeholder="ex: 30.00" step="0.01" oninput="somarGanhos()">
+      <label><span class="chip chip-bonus">BÔNUS</span> Bônus (R$)</label>
+      <input type="number" id="f-bon" inputmode="decimal" placeholder="0,00" oninput="somarGanhos()">
     </div>
   </div>
   <hr class="divider">
   <div class="field">
-    <label>Total Ganhos Brutos (R$)</label>
-    <input type="number" id="f-ganhos" class="readonly-sum" placeholder="soma automática" readonly>
+    <label>Total (R$)</label>
+    <input type="number" id="f-tot" class="sum-field" placeholder="soma automática" readonly>
+  </div>
+  <div id="rank-day" style="display:none;margin-top:16px;">
+    <div class="card-title" style="margin-bottom:12px;">🏆 Ranking do Dia</div>
+    <div class="app-bars" id="rank-day-bars"></div>
+    <div id="rank-day-winner"></div>
   </div>
 </div>
 
-<!-- DADOS DO DIA -->
-<div class="card">
-  <div class="card-label">📍 Dados do Dia</div>
-  <div class="form-grid">
+<div class="card card-accent">
+  <div class="card-title">📍 Dados do Dia</div>
+  <div class="grid2">
     <div class="field">
       <label>Data</label>
       <input type="date" id="f-data">
     </div>
     <div class="field">
       <label>KM Rodados</label>
-      <input type="number" id="f-km" placeholder="ex: 180" step="0.1" oninput="calcularTempReal()">
+      <input type="number" id="f-km" inputmode="decimal" placeholder="ex: 150" oninput="calcRT()">
     </div>
     <div class="field">
-      <label>Km/L (computador de bordo)</label>
-      <input type="number" id="f-kml" placeholder="padrão config" step="0.1" oninput="calcularTempReal()">
+      <label>Km/L (bordo)</label>
+      <input type="number" id="f-kml" inputmode="decimal" placeholder="padrão config" oninput="calcRT()">
     </div>
     <div class="field">
-      <label>Preço do Litro (R$)</label>
-      <input type="number" id="f-preco-litro" placeholder="padrão config" step="0.01" oninput="calcularTempReal()">
+      <label>Preço Litro (R$)</label>
+      <input type="number" id="f-lit" inputmode="decimal" placeholder="padrão config" oninput="calcRT()">
     </div>
     <div class="field">
       <label>Horas Trabalhadas</label>
-      <input type="number" id="f-horas" placeholder="ex: 8" step="0.5" oninput="calcularTempReal()">
+      <input type="number" id="f-hrs" inputmode="decimal" placeholder="ex: 8" oninput="calcRT()">
     </div>
   </div>
 </div>
 
-<!-- RESULTADO -->
-<div class="card accent2">
-  <div class="card-label">⚡ Resultado do Dia</div>
+<div class="card card-orange">
+  <div class="card-title">⚡ Resultado do Dia</div>
   <div class="result-grid">
-    <div class="result-box">
-      <div class="r-label">Combustível</div>
-      <div class="r-value orange" id="r-combustivel">R$ 0,00</div>
+    <div class="rbox">
+      <div class="rbox-label">Combustível</div>
+      <div class="rbox-value c-orange" id="r-comb">R$ 0</div>
     </div>
-    <div class="result-box">
-      <div class="r-label">Reserva Manutenção</div>
-      <div class="r-value yellow" id="r-manutencao">R$ 0,00</div>
+    <div class="rbox">
+      <div class="rbox-label">Reserva Manut.</div>
+      <div class="rbox-value c-yellow" id="r-manut">R$ 0</div>
     </div>
-    <div class="result-box">
-      <div class="r-label">Líquido Real</div>
-      <div class="r-value green" id="r-liquido">R$ 0,00</div>
+    <div class="rbox">
+      <div class="rbox-label">Líquido Real</div>
+      <div class="rbox-value c-green" id="r-liq">R$ 0</div>
     </div>
-    <div class="result-box">
-      <div class="r-label">Custo/KM</div>
-      <div class="r-value blue" id="r-custokm">R$ 0,000</div>
+    <div class="rbox">
+      <div class="rbox-label">Custo / KM</div>
+      <div class="rbox-value c-blue" id="r-ckm">R$ 0,000</div>
     </div>
-    <div class="result-box">
-      <div class="r-label">Ganho/Hora</div>
-      <div class="r-value green" id="r-horakm">—</div>
+    <div class="rbox">
+      <div class="rbox-label">Ganho / Hora</div>
+      <div class="rbox-value c-green" id="r-hra">—</div>
     </div>
-    <div class="result-box">
-      <div class="r-label">% Custo/Ganhos</div>
-      <div class="r-value yellow" id="r-perc">0%</div>
+    <div class="rbox">
+      <div class="rbox-label">% Custo</div>
+      <div class="rbox-value c-yellow" id="r-pct">0%</div>
     </div>
   </div>
-
-  <!-- COMPARATIVO APPS NO DIA -->
-  <div id="app-compare-day" style="display:none; margin-top:16px;">
-    <div class="card-label" style="margin-bottom:10px;">🏆 Ranking do Dia</div>
-    <div class="app-bars" id="app-bars-day"></div>
-    <div id="winner-day"></div>
-  </div>
-
-  <div class="reserve-bar-wrap">
-    <div class="bar-label">
+  <div class="prog-wrap">
+    <div class="prog-header">
       <span>Distribuição dos Ganhos</span>
-      <span id="bar-detail">—</span>
+      <span id="prog-detail">—</span>
     </div>
-    <div class="bar-track">
-      <div class="bar-fill" id="bar-fill" style="width:0%"></div>
+    <div class="prog-track">
+      <div class="prog-fill" id="prog-fill" style="width:0%"></div>
     </div>
   </div>
 </div>
 
-<button class="btn" onclick="salvarDia()">Salvar Dia →</button>
+<button class="btn-primary" onclick="salvar()">Salvar Dia →</button>
 ```
 
   </div>
 
-  <!-- TAB: HISTÓRICO -->
+  <!-- HISTÓRICO -->
 
-  <div id="tab-historico" class="tab-content">
-    <div class="card">
-      <div class="card-label">📋 Registros</div>
-      <div id="tabela-historico"></div>
+  <div id="tab-hist" class="tab-content">
+    <div class="card card-accent">
+      <div class="card-title">📋 Registros</div>
+      <div id="hist-body"></div>
     </div>
   </div>
 
-  <!-- TAB: RELATÓRIO -->
+  <!-- RELATÓRIO -->
 
-  <div id="tab-relatorio" class="tab-content">
-    <div class="period-selector">
-      <button class="period-btn active" onclick="setPeriod('semana', this)">Semana</button>
-      <button class="period-btn" onclick="setPeriod('mes', this)">Mês</button>
-      <button class="period-btn" onclick="setPeriod('total', this)">Total</button>
+  <div id="tab-rel" class="tab-content">
+    <div class="period-row">
+      <button class="pbtn active" onclick="setPer('semana',this,'rel')">Semana</button>
+      <button class="pbtn" onclick="setPer('mes',this,'rel')">Mês</button>
+      <button class="pbtn" onclick="setPer('total',this,'rel')">Total</button>
     </div>
-    <div class="summary-grid" id="summary-grid"></div>
-    <div class="card">
-      <div class="card-label">📈 Ganhos vs Reserva vs Combustível</div>
-      <div class="chart-wrap"><canvas id="chart-main"></canvas></div>
+    <div class="sum-grid" id="rel-sum"></div>
+    <div class="card card-accent">
+      <div class="card-title">📈 Ganhos vs Reserva vs Combustível</div>
+      <div class="chart-wrap"><canvas id="c-main"></canvas></div>
     </div>
-    <div class="card accent3">
-      <div class="card-label">🏁 KM Rodados</div>
-      <div class="chart-wrap"><canvas id="chart-km"></canvas></div>
+    <div class="card card-blue">
+      <div class="card-title">🏁 KM por Dia</div>
+      <div class="chart-wrap"><canvas id="c-km"></canvas></div>
     </div>
   </div>
 
-  <!-- TAB: APPS -->
+  <!-- APPS -->
 
   <div id="tab-apps" class="tab-content">
-    <div class="period-selector">
-      <button class="period-btn active" onclick="setAppPeriod('semana', this)">Semana</button>
-      <button class="period-btn" onclick="setAppPeriod('mes', this)">Mês</button>
-      <button class="period-btn" onclick="setAppPeriod('total', this)">Total</button>
+    <div class="period-row">
+      <button class="pbtn active" onclick="setPer('semana',this,'apps')">Semana</button>
+      <button class="pbtn" onclick="setPer('mes',this,'apps')">Mês</button>
+      <button class="pbtn" onclick="setPer('total',this,'apps')">Total</button>
     </div>
-
-```
-<div class="card c-uber">
-  <div class="card-label">🏆 Ranking de Apps</div>
-  <div class="app-bars" id="app-bars-periodo"></div>
-  <div id="winner-periodo" style="margin-top:12px;"></div>
-</div>
-
-<div class="card">
-  <div class="card-label">📊 Ganhos por App</div>
-  <div class="chart-wrap"><canvas id="chart-apps"></canvas></div>
-</div>
-
-<div class="summary-grid" id="apps-detalhe"></div>
-```
-
+    <div class="card card-uber">
+      <div class="card-title">🏆 Ranking de Apps</div>
+      <div class="app-bars" id="app-rank"></div>
+      <div id="app-winner"></div>
+    </div>
+    <div class="card card-accent">
+      <div class="card-title">📊 Ganhos por App / Dia</div>
+      <div class="chart-wrap"><canvas id="c-apps"></canvas></div>
+    </div>
+    <div class="sum-grid" id="app-detalhe"></div>
   </div>
 
-  <!-- TAB: CONFIG -->
+  <!-- CONFIG -->
 
-  <div id="tab-config" class="tab-content">
-    <div class="card">
-      <div class="card-label">⚙️ Configurações de Manutenção</div>
-      <div class="form-grid">
+  <div id="tab-cfg" class="tab-content">
+    <div class="card card-accent">
+      <div class="card-title">⚙️ Manutenção & Combustível</div>
+      <div class="grid2">
         <div class="field">
-          <label>Reserva por KM (R$)</label>
-          <input type="number" id="c-reserva-km" placeholder="ex: 0.13" step="0.01">
+          <label>Reserva / KM (R$)</label>
+          <input type="number" id="c-res" inputmode="decimal" placeholder="0.13">
         </div>
         <div class="field">
-          <label>Preço padrão do Litro (R$)</label>
-          <input type="number" id="c-preco-litro" placeholder="ex: 4.54" step="0.01">
+          <label>Preço Litro (R$)</label>
+          <input type="number" id="c-lit" inputmode="decimal" placeholder="4.54">
         </div>
         <div class="field">
           <label>KM/L padrão</label>
-          <input type="number" id="c-kml" placeholder="ex: 8.6" step="0.1">
+          <input type="number" id="c-kml" inputmode="decimal" placeholder="8.6">
         </div>
         <div class="field">
           <label>Modelo do Carro</label>
-          <input type="text" id="c-modelo" placeholder="ex: Ônix LT 2025">
+          <input type="text" id="c-mod" placeholder="Ônix LT 2025">
         </div>
       </div>
-      <p class="config-hint">
-        💡 Sugestão Ônix 1.0 Uber: R$ 0,13/km<br>
-        Cobre: óleo, pneus, freios, filtros e revisões.
-      </p>
+      <div class="hint">
+        💡 Sugestão Ônix 1.0 Uber: <strong style="color:var(--accent)">R$ 0,13/km</strong><br>
+        Cobre: óleo, pneus, freios, filtros e revisões periódicas.
+      </div>
     </div>
-    <button class="btn" onclick="salvarConfig()">Salvar Configurações →</button>
-    <br><br>
-    <button class="btn secondary" onclick="exportarDados()">↓ Exportar Dados (JSON)</button>
+    <button class="btn-primary" onclick="salvarCfg()">Salvar Configurações →</button>
+    <button class="btn-ghost" onclick="exportar()">↓ Exportar Dados JSON</button>
   </div>
+
 </div>
 
 <script>
-const STORAGE_KEY = 'uberkm_registros_v3';
-const CONFIG_KEY  = 'uberkm_config_v3';
+const SK='uberkm_v4', CK='uberkm_cfg_v4';
+let regs=JSON.parse(localStorage.getItem(SK)||'[]');
+let cfg=JSON.parse(localStorage.getItem(CK)||'null')||{res:0.13,lit:4.54,kml:8.6,mod:'Ônix LT 2025'};
+let cMain=null,cKm=null,cApps=null;
+let perRel='semana',perApps='semana';
+const AC={uber:'#06c167','99':'#f5a623',ind:'#9b59ff',bon:'#c8f000'};
+const AL={uber:'Uber','99':'99',ind:'inDrive',bon:'Bônus'};
 
-let registros = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-let config    = JSON.parse(localStorage.getItem(CONFIG_KEY)  || 'null') || {
-  reservaKm: 0.13, precoLitro: 4.54, kml: 8.6, modelo: 'Ônix LT 2025'
-};
-
-let chartMain = null, chartKm = null, chartApps = null;
-let periodoAtual = 'semana', appPeriodoAtual = 'semana';
-
-const APP_COLORS = {
-  uber: '#06c167', '99': '#f5a623', indrive: '#a259ff', bonus: '#e8ff47'
-};
-const APP_LABELS = { uber: 'Uber', '99': '99', indrive: 'inDrive', bonus: 'Bônus' };
-
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('f-data').value = hoje();
-  atualizarHeaderDate();
-  carregarConfig();
-  carregarHistorico();
-  renderRelatorio();
+window.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('f-data').value=ts();
+  setHDate();
+  loadCfg();
+  renderHist();
+  renderRel();
   renderApps();
 });
 
-function hoje() { return new Date().toISOString().slice(0,10); }
+function ts(){return new Date().toISOString().slice(0,10);}
 
-function atualizarHeaderDate() {
-  const d = new Date();
-  const opts = { weekday:'long', day:'2-digit', month:'long', year:'numeric' };
-  document.getElementById('headerDate').innerHTML =
-    d.toLocaleDateString('pt-BR', opts).replace(', ','<br>');
+function setHDate(){
+  const d=new Date();
+  document.getElementById('hDate').innerHTML=
+    d.toLocaleDateString('pt-BR',{weekday:'long'})+'<br>'+
+    d.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
 }
 
-// ─── TABS ──────────────────────────────────────────────────
-function switchTab(nome, btn) {
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
-  document.getElementById('tab-'+nome).classList.add('active');
+function goTab(n,btn){
+  document.querySelectorAll('.tab-content').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
+  document.getElementById('tab-'+n).classList.add('active');
   btn.classList.add('active');
-  if (nome === 'historico') carregarHistorico();
-  if (nome === 'relatorio') renderRelatorio();
-  if (nome === 'apps')      renderApps();
+  if(n==='hist')renderHist();
+  if(n==='rel')renderRel();
+  if(n==='apps')renderApps();
 }
 
-// ─── SOMAR GANHOS ──────────────────────────────────────────
-function somarGanhos() {
-  const uber   = parseFloat(document.getElementById('f-uber').value)    || 0;
-  const nov99  = parseFloat(document.getElementById('f-99').value)      || 0;
-  const indrv  = parseFloat(document.getElementById('f-indrive').value) || 0;
-  const bonus  = parseFloat(document.getElementById('f-bonus').value)   || 0;
-  const total  = uber + nov99 + indrv + bonus;
-  document.getElementById('f-ganhos').value = total > 0 ? total.toFixed(2) : '';
-  calcularTempReal();
-  renderComparativoDia(uber, nov99, indrv, bonus);
+function somarGanhos(){
+  const u=pf('f-uber'),n=pf('f-99'),i=pf('f-ind'),b=pf('f-bon');
+  const t=u+n+i+b;
+  document.getElementById('f-tot').value=t>0?t.toFixed(2):'';
+  calcRT();
+  renderRankDay(u,n,i,b);
 }
 
-function renderComparativoDia(uber, nov99, indrv, bonus) {
-  const apps = [
-    { key: 'uber',    val: uber,  label: 'Uber' },
-    { key: '99',      val: nov99, label: '99' },
-    { key: 'indrive', val: indrv, label: 'inDrive' },
-    { key: 'bonus',   val: bonus, label: 'Bônus' },
-  ].filter(a => a.val > 0).sort((a,b) => b.val - a.val);
-
-  const wrap = document.getElementById('app-compare-day');
-  if (!apps.length) { wrap.style.display = 'none'; return; }
-  wrap.style.display = 'block';
-
-  const max = apps[0].val;
-  document.getElementById('app-bars-day').innerHTML = apps.map(a => `
-    <div class="app-bar-row">
-      <span class="app-bar-label" style="color:${APP_COLORS[a.key]}">${a.label}</span>
-      <div class="app-bar-track">
-        <div class="app-bar-fill" style="width:${(a.val/max*100).toFixed(1)}%;background:${APP_COLORS[a.key]}"></div>
-      </div>
-      <span class="app-bar-val">${fmt(a.val)}</span>
+function renderRankDay(u,n,i,b){
+  const wrap=document.getElementById('rank-day');
+  const items=[{k:'uber',v:u},{k:'99',v:n},{k:'ind',v:i},{k:'bon',v:b}]
+    .filter(a=>a.v>0).sort((a,b2)=>b2.v-a.v);
+  if(!items.length){wrap.style.display='none';return;}
+  wrap.style.display='block';
+  const max=items[0].v;
+  document.getElementById('rank-day-bars').innerHTML=items.map(a=>`
+    <div class="app-row">
+      <span class="app-row-label" style="color:${AC[a.k]}">${AL[a.k]}</span>
+      <div class="app-track"><div class="app-fill" style="width:${(a.v/max*100).toFixed(1)}%;background:${AC[a.k]}"></div></div>
+      <span class="app-row-val">${fm(a.v)}</span>
     </div>`).join('');
-
-  const w = apps[0];
-  document.getElementById('winner-day').innerHTML =
-    `<div class="winner-badge" style="background:${APP_COLORS[w.key]}22;color:${APP_COLORS[w.key]};border:1px solid ${APP_COLORS[w.key]}44">
-      🏆 ${w.label} liderou hoje com ${fmt(w.val)}
+  const w=items[0];
+  document.getElementById('rank-day-winner').innerHTML=
+    `<div class="winner-pill" style="background:${AC[w.k]}18;color:${AC[w.k]};border:1px solid ${AC[w.k]}33">
+      🏆 ${AL[w.k]} liderou — ${fm(w.v)}
     </div>`;
 }
 
-// ─── CÁLCULO TEMPO REAL ────────────────────────────────────
-function calcularTempReal() {
-  const km     = parseFloat(document.getElementById('f-km').value)          || 0;
-  const ganhos = parseFloat(document.getElementById('f-ganhos').value)      || 0;
-  const kml    = parseFloat(document.getElementById('f-kml').value)         || config.kml;
-  const litro  = parseFloat(document.getElementById('f-preco-litro').value) || config.precoLitro;
-  const horas  = parseFloat(document.getElementById('f-horas').value)       || 0;
-
-  const combustivel = km > 0 && kml > 0 ? (km / kml) * litro : 0;
-  const manutencao  = km * config.reservaKm;
-  const liquido     = ganhos - combustivel - manutencao;
-  const custokm     = km > 0 ? (combustivel + manutencao) / km : 0;
-  const ganhoHora   = horas > 0 ? liquido / horas : 0;
-  const perc        = ganhos > 0 ? ((combustivel + manutencao) / ganhos * 100) : 0;
-
-  set('r-combustivel', fmt(combustivel));
-  set('r-manutencao',  fmt(manutencao));
-  set('r-liquido',     fmt(liquido));
-  set('r-custokm',     'R$ ' + custokm.toFixed(3).replace('.',','));
-  set('r-horakm',      horas > 0 ? fmt(ganhoHora) : '—');
-  set('r-perc',        perc.toFixed(1) + '%');
-
-  document.getElementById('r-liquido').className =
-    'r-value ' + (liquido >= 0 ? 'green' : 'red');
-
-  const pct = Math.min(perc, 100);
-  document.getElementById('bar-fill').style.width = pct + '%';
-  document.getElementById('bar-detail').textContent =
-    ganhos > 0
-      ? `${fmt(combustivel)} comb + ${fmt(manutencao)} manutenção = ${fmt(combustivel+manutencao)} custo`
-      : '—';
+function calcRT(){
+  const km=pf('f-km'),gan=pf('f-tot');
+  const kml=pf('f-kml')||cfg.kml,lit=pf('f-lit')||cfg.lit,hrs=pf('f-hrs');
+  const comb=km>0&&kml>0?(km/kml)*lit:0;
+  const manut=km*cfg.res;
+  const liq=gan-comb-manut;
+  const ckm=km>0?(comb+manut)/km:0;
+  const hra=hrs>0?liq/hrs:0;
+  const pct=gan>0?(comb+manut)/gan*100:0;
+  tx('r-comb',fm(comb));
+  tx('r-manut',fm(manut));
+  tx('r-liq',fm(liq));
+  tx('r-ckm','R$ '+ckm.toFixed(3).replace('.',','));
+  tx('r-hra',hrs>0?fm(hra):'—');
+  tx('r-pct',pct.toFixed(1)+'%');
+  document.getElementById('r-liq').className='rbox-value '+(liq>=0?'c-green':'c-red');
+  document.getElementById('prog-fill').style.width=Math.min(pct,100).toFixed(1)+'%';
+  document.getElementById('prog-detail').textContent=gan>0?`${fm(comb)} comb + ${fm(manut)} manut`:'—';
 }
 
-function set(id, txt) { document.getElementById(id).textContent = txt; }
-
-function fmt(val) {
-  return 'R$ ' + val.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+function salvar(){
+  const data=document.getElementById('f-data').value;
+  const km=pf('f-km'),gan=pf('f-tot');
+  if(!data||!km||!gan){alert('Preencha data, km e ganhos.');return;}
+  const kml=pf('f-kml')||cfg.kml,lit=pf('f-lit')||cfg.lit,hrs=pf('f-hrs');
+  const comb=(km/kml)*lit,manut=km*cfg.res,liq=gan-comb-manut;
+  const reg={data,km,gan,kml,lit,hrs,comb,manut,liq,
+    apps:{uber:pf('f-uber'),'99':pf('f-99'),ind:pf('f-ind'),bon:pf('f-bon')}};
+  const idx=regs.findIndex(r=>r.data===data);
+  if(idx>=0)regs[idx]=reg;else regs.push(reg);
+  regs.sort((a,b)=>a.data.localeCompare(b.data));
+  localStorage.setItem(SK,JSON.stringify(regs));
+  toast('✓ Dia salvo!');
 }
 
-// ─── SALVAR DIA ────────────────────────────────────────────
-function salvarDia() {
-  const data   = document.getElementById('f-data').value;
-  const km     = parseFloat(document.getElementById('f-km').value);
-  const ganhos = parseFloat(document.getElementById('f-ganhos').value);
-  const kml    = parseFloat(document.getElementById('f-kml').value)         || config.kml;
-  const litro  = parseFloat(document.getElementById('f-preco-litro').value) || config.precoLitro;
-  const horas  = parseFloat(document.getElementById('f-horas').value)       || 0;
-  const gUber  = parseFloat(document.getElementById('f-uber').value)        || 0;
-  const g99    = parseFloat(document.getElementById('f-99').value)          || 0;
-  const gIndrv = parseFloat(document.getElementById('f-indrive').value)     || 0;
-  const gBonus = parseFloat(document.getElementById('f-bonus').value)       || 0;
-
-  if (!data || !km || !ganhos) {
-    alert('Preencha ao menos: data, km rodados e ganhos.'); return;
-  }
-
-  const combustivel = (km / kml) * litro;
-  const manutencao  = km * config.reservaKm;
-  const liquido     = ganhos - combustivel - manutencao;
-
-  const reg = {
-    data, km, ganhos, kml, litro, horas,
-    combustivel, manutencao, liquido,
-    apps: { uber: gUber, '99': g99, indrive: gIndrv, bonus: gBonus }
-  };
-
-  const idx = registros.findIndex(r => r.data === data);
-  if (idx >= 0) registros[idx] = reg; else registros.push(reg);
-  registros.sort((a,b) => a.data.localeCompare(b.data));
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
-  mostrarToast('✓ Dia registrado!');
+function renderHist(){
+  const el=document.getElementById('hist-body');
+  if(!regs.length){el.innerHTML='<div class="empty">Nenhum registro ainda.<br>Registre o primeiro dia!</div>';return;}
+  el.innerHTML=`<table class="hist-table">
+    <thead><tr><th>Data</th><th>KM</th><th>Ganhos</th><th>Comb.</th><th>Manut.</th><th>Líquido</th><th></th></tr></thead>
+    <tbody>${[...regs].reverse().map(r=>`<tr>
+      <td>${fd(r.data)}</td><td>${r.km}km</td><td>${fm(r.gan)}</td>
+      <td>${fm(r.comb)}</td><td>${fm(r.manut)}</td>
+      <td><span class="pill ${r.liq>=0?'pill-green':'pill-red'}">${fm(r.liq)}</span></td>
+      <td><button class="del-btn" onclick="del('${r.data}')">✕</button></td>
+    </tr>`).join('')}</tbody></table>`;
 }
 
-function mostrarToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg || '✓ Salvo!';
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+function del(data){
+  if(!confirm('Remover '+fd(data)+'?'))return;
+  regs=regs.filter(r=>r.data!==data);
+  localStorage.setItem(SK,JSON.stringify(regs));
+  renderHist();
 }
 
-// ─── HISTÓRICO ─────────────────────────────────────────────
-function carregarHistorico() {
-  const el = document.getElementById('tabela-historico');
-  if (!registros.length) {
-    el.innerHTML = '<div class="empty-state">Nenhum dia registrado ainda.</div>'; return;
-  }
-  const sorted = [...registros].reverse();
-  el.innerHTML = `
-    <table class="history-table">
-      <thead><tr>
-        <th>Data</th><th>KM</th><th>Ganhos</th><th>Comb.</th><th>Manutenção</th><th>Líquido</th><th></th>
-      </tr></thead>
-      <tbody>${sorted.map(r => `
-        <tr>
-          <td>${fmtData(r.data)}</td>
-          <td>${r.km} km</td>
-          <td>${fmt(r.ganhos)}</td>
-          <td>${fmt(r.combustivel)}</td>
-          <td>${fmt(r.manutencao)}</td>
-          <td><span class="badge ${r.liquido>=0?'badge-green':'badge-red'}">${fmt(r.liquido)}</span></td>
-          <td><button class="del-btn" onclick="deletarDia('${r.data}')">✕</button></td>
-        </tr>`).join('')}
-      </tbody>
-    </table>`;
-}
-
-function fmtData(str) {
-  const [y,m,d] = str.split('-'); return `${d}/${m}/${y}`;
-}
-
-function deletarDia(data) {
-  if (!confirm('Remover ' + fmtData(data) + '?')) return;
-  registros = registros.filter(r => r.data !== data);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
-  carregarHistorico();
-}
-
-// ─── RELATÓRIO ─────────────────────────────────────────────
-function filtrarRegistros(periodo) {
-  const agora = new Date();
-  return registros.filter(r => {
-    const d = new Date(r.data + 'T12:00:00');
-    if (periodo === 'semana') return (agora - d) / 86400000 <= 7;
-    if (periodo === 'mes') return d.getMonth() === agora.getMonth() && d.getFullYear() === agora.getFullYear();
+function filtrar(per){
+  const now=new Date();
+  return regs.filter(r=>{
+    const d=new Date(r.data+'T12:00:00');
+    if(per==='semana')return(now-d)/86400000<=7;
+    if(per==='mes')return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();
     return true;
   });
 }
 
-function setPeriod(p, btn) {
-  periodoAtual = p;
-  document.querySelectorAll('#tab-relatorio .period-btn').forEach(b => b.classList.remove('active'));
+function setPer(p,btn,ctx){
+  if(ctx==='rel')perRel=p;else perApps=p;
+  const sel=ctx==='rel'?'#tab-rel .pbtn':'#tab-apps .pbtn';
+  document.querySelectorAll(sel).forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  renderRelatorio();
+  if(ctx==='rel')renderRel();else renderApps();
 }
 
-function renderRelatorio() {
-  const dados = filtrarRegistros(periodoAtual);
-  const totGanhos  = dados.reduce((s,r) => s + r.ganhos, 0);
-  const totComb    = dados.reduce((s,r) => s + r.combustivel, 0);
-  const totManut   = dados.reduce((s,r) => s + r.manutencao, 0);
-  const totLiquido = dados.reduce((s,r) => s + r.liquido, 0);
-  const totKm      = dados.reduce((s,r) => s + r.km, 0);
-
-  document.getElementById('summary-grid').innerHTML = `
-    <div class="sum-box"><div class="s-label">Ganhos Brutos</div><div class="s-value">${fmt(totGanhos)}</div></div>
-    <div class="sum-box"><div class="s-label">Líquido Real</div><div class="s-value" style="color:${totLiquido>=0?'var(--success)':'var(--danger)'}">${fmt(totLiquido)}</div></div>
-    <div class="sum-box"><div class="s-label">Reserva Manutenção</div><div class="s-value" style="color:var(--accent)">${fmt(totManut)}</div></div>
-    <div class="sum-box"><div class="s-label">Combustível</div><div class="s-value" style="color:var(--accent2)">${fmt(totComb)}</div></div>
-    <div class="sum-box"><div class="s-label">KM Total</div><div class="s-value" style="color:var(--accent3)">${totKm.toFixed(0)} km</div></div>
-    <div class="sum-box"><div class="s-label">Dias Registrados</div><div class="s-value" style="color:var(--muted)">${dados.length}</div></div>`;
-
-  const labels = dados.map(r => fmtData(r.data));
-  const opts = {
-    responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { labels: { color: '#5a6070', font: { family:'Space Mono', size:9 } } } },
-    scales: {
-      x: { ticks: { color:'#5a6070', font:{family:'Space Mono',size:8} }, grid:{color:'#1f2530'} },
-      y: { ticks: { color:'#5a6070', font:{family:'Space Mono',size:8} }, grid:{color:'#1f2530'} }
-    }
-  };
-
-  if (chartMain) chartMain.destroy();
-  chartMain = new Chart(document.getElementById('chart-main'), {
-    type: 'bar',
-    data: { labels, datasets: [
-      { label:'Ganhos',      data: dados.map(r=>r.ganhos),      backgroundColor:'rgba(232,255,71,.7)', borderRadius:4 },
-      { label:'Manutenção',  data: dados.map(r=>r.manutencao),  backgroundColor:'rgba(255,107,53,.7)', borderRadius:4 },
-      { label:'Combustível', data: dados.map(r=>r.combustivel), backgroundColor:'rgba(71,201,255,.5)', borderRadius:4 },
-    ]},
-    options: opts
-  });
-
-  if (chartKm) chartKm.destroy();
-  chartKm = new Chart(document.getElementById('chart-km'), {
-    type: 'line',
-    data: { labels, datasets: [{
-      label:'KM', data: dados.map(r=>r.km),
-      borderColor:'rgba(71,201,255,1)', backgroundColor:'rgba(71,201,255,.1)',
-      fill:true, tension:.3, pointBackgroundColor:'var(--accent3)', pointRadius:4
-    }]},
-    options: opts
-  });
+function renderRel(){
+  const d=filtrar(perRel);
+  const tG=sm(d,'gan'),tC=sm(d,'comb'),tM=sm(d,'manut'),tL=sm(d,'liq'),tK=sm(d,'km');
+  document.getElementById('rel-sum').innerHTML=[
+    ['Ganhos Brutos',fm(tG),'var(--text)'],
+    ['Líquido Real',fm(tL),tL>=0?'var(--success)':'var(--danger)'],
+    ['Reserva Manut.',fm(tM),'var(--accent)'],
+    ['Combustível',fm(tC),'var(--orange)'],
+    ['KM Total',tK.toFixed(0)+' km','var(--blue)'],
+    ['Dias Registrados',d.length,'var(--muted)'],
+  ].map(([l,v,c])=>`<div class="sbox"><div class="sbox-label">${l}</div><div class="sbox-value" style="color:${c}">${v}</div></div>`).join('');
+  const lbs=d.map(r=>fd(r.data)),co=copts();
+  if(cMain)cMain.destroy();
+  cMain=new Chart(document.getElementById('c-main'),{type:'bar',data:{labels:lbs,datasets:[
+    {label:'Ganhos',data:d.map(r=>r.gan),backgroundColor:'rgba(200,240,0,.7)',borderRadius:4},
+    {label:'Manutenção',data:d.map(r=>r.manut),backgroundColor:'rgba(255,107,53,.7)',borderRadius:4},
+    {label:'Combustível',data:d.map(r=>r.comb),backgroundColor:'rgba(61,184,255,.5)',borderRadius:4},
+  ]},options:co});
+  if(cKm)cKm.destroy();
+  cKm=new Chart(document.getElementById('c-km'),{type:'line',data:{labels:lbs,datasets:[{
+    label:'KM',data:d.map(r=>r.km),borderColor:'#3db8ff',backgroundColor:'rgba(61,184,255,.1)',
+    fill:true,tension:.3,pointBackgroundColor:'#3db8ff',pointRadius:4
+  }]},options:co});
 }
 
-// ─── APPS ──────────────────────────────────────────────────
-function setAppPeriod(p, btn) {
-  appPeriodoAtual = p;
-  document.querySelectorAll('#tab-apps .period-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderApps();
-}
-
-function renderApps() {
-  const dados = filtrarRegistros(appPeriodoAtual);
-
-  const totais = { uber: 0, '99': 0, indrive: 0, bonus: 0 };
-  dados.forEach(r => {
-    if (r.apps) {
-      totais.uber    += r.apps.uber    || 0;
-      totais['99']   += r.apps['99']   || 0;
-      totais.indrive += r.apps.indrive || 0;
-      totais.bonus   += r.apps.bonus   || 0;
-    }
-  });
-
-  const apps = Object.entries(totais)
-    .map(([k,v]) => ({ key:k, val:v, label: APP_LABELS[k] }))
-    .filter(a => a.val > 0)
-    .sort((a,b) => b.val - a.val);
-
-  const barsEl  = document.getElementById('app-bars-periodo');
-  const winnerEl = document.getElementById('winner-periodo');
-  const detalheEl = document.getElementById('apps-detalhe');
-
-  if (!apps.length) {
-    barsEl.innerHTML = '<div class="empty-state">Nenhum dado de app ainda.<br>Registre dias com os valores por plataforma.</div>';
-    winnerEl.innerHTML = '';
-    detalheEl.innerHTML = '';
-    if (chartApps) { chartApps.destroy(); chartApps = null; }
-    return;
+function renderApps(){
+  const d=filtrar(perApps);
+  const tot={uber:0,'99':0,ind:0,bon:0};
+  d.forEach(r=>{if(r.apps)for(const k in tot)tot[k]+=(r.apps[k]||0);});
+  const items=Object.entries(tot).map(([k,v])=>({k,v})).filter(a=>a.v>0).sort((a,b)=>b.v-a.v);
+  const rankEl=document.getElementById('app-rank'),winEl=document.getElementById('app-winner'),detEl=document.getElementById('app-detalhe');
+  if(!items.length){
+    rankEl.innerHTML='<div class="empty">Registre dias com ganhos por app.</div>';
+    winEl.innerHTML='';detEl.innerHTML='';
+    if(cApps){cApps.destroy();cApps=null;}return;
   }
-
-  const max = apps[0].val;
-  barsEl.innerHTML = apps.map(a => `
-    <div class="app-bar-row">
-      <span class="app-bar-label" style="color:${APP_COLORS[a.key]}">${a.label}</span>
-      <div class="app-bar-track">
-        <div class="app-bar-fill" style="width:${(a.val/max*100).toFixed(1)}%;background:${APP_COLORS[a.key]}"></div>
-      </div>
-      <span class="app-bar-val">${fmt(a.val)}</span>
+  const max=items[0].v;
+  rankEl.innerHTML=items.map(a=>`
+    <div class="app-row">
+      <span class="app-row-label" style="color:${AC[a.k]}">${AL[a.k]}</span>
+      <div class="app-track"><div class="app-fill" style="width:${(a.v/max*100).toFixed(1)}%;background:${AC[a.k]}"></div></div>
+      <span class="app-row-val">${fm(a.v)}</span>
     </div>`).join('');
-
-  const w = apps[0];
-  const totalApps = apps.reduce((s,a) => s+a.val, 0);
-  winnerEl.innerHTML = `
-    <div class="winner-badge" style="background:${APP_COLORS[w.key]}22;color:${APP_COLORS[w.key]};border:1px solid ${APP_COLORS[w.key]}44">
-      🏆 ${w.label} é o app mais rentável — ${fmt(w.val)} (${(w.val/totalApps*100).toFixed(1)}% do total)
-    </div>`;
-
-  detalheEl.innerHTML = apps.map(a => `
-    <div class="sum-box">
-      <div class="s-label" style="color:${APP_COLORS[a.key]}">${a.label}</div>
-      <div class="s-value">${fmt(a.val)}</div>
-    </div>`).join('');
-
-  const labels = dados.map(r => fmtData(r.data));
-  const opts = {
-    responsive:true, maintainAspectRatio:false,
-    plugins:{ legend:{ labels:{ color:'#5a6070', font:{family:'Space Mono',size:9} } } },
-    scales:{
-      x:{ ticks:{color:'#5a6070',font:{family:'Space Mono',size:8}}, grid:{color:'#1f2530'} },
-      y:{ ticks:{color:'#5a6070',font:{family:'Space Mono',size:8}}, grid:{color:'#1f2530'} }
-    }
-  };
-
-  if (chartApps) chartApps.destroy();
-  chartApps = new Chart(document.getElementById('chart-apps'), {
-    type:'bar',
-    data:{ labels, datasets:[
-      { label:'Uber',    data: dados.map(r=>r.apps?.uber    ||0), backgroundColor:'rgba(6,193,103,.7)',   borderRadius:4 },
-      { label:'99',      data: dados.map(r=>r.apps?.['99']  ||0), backgroundColor:'rgba(245,166,35,.7)', borderRadius:4 },
-      { label:'inDrive', data: dados.map(r=>r.apps?.indrive ||0), backgroundColor:'rgba(162,89,255,.7)', borderRadius:4 },
-      { label:'Bônus',   data: dados.map(r=>r.apps?.bonus   ||0), backgroundColor:'rgba(232,255,71,.5)', borderRadius:4 },
-    ]},
-    options:{ ...opts, scales:{ ...opts.scales } }
-  });
+  const w=items[0],tAll=items.reduce((s,a)=>s+a.v,0);
+  winEl.innerHTML=`<div class="winner-pill" style="background:${AC[w.k]}18;color:${AC[w.k]};border:1px solid ${AC[w.k]}33">
+    🏆 ${AL[w.k]} — ${fm(w.v)} (${(w.v/tAll*100).toFixed(1)}%)</div>`;
+  detEl.innerHTML=items.map(a=>`<div class="sbox"><div class="sbox-label" style="color:${AC[a.k]}">${AL[a.k]}</div><div class="sbox-value">${fm(a.v)}</div></div>`).join('');
+  const lbs=d.map(r=>fd(r.data)),co=copts();
+  if(cApps)cApps.destroy();
+  cApps=new Chart(document.getElementById('c-apps'),{type:'bar',data:{labels:lbs,datasets:[
+    {label:'Uber',data:d.map(r=>r.apps?.uber||0),backgroundColor:'rgba(6,193,103,.7)',borderRadius:4},
+    {label:'99',data:d.map(r=>r.apps?.['99']||0),backgroundColor:'rgba(245,166,35,.7)',borderRadius:4},
+    {label:'inDrive',data:d.map(r=>r.apps?.ind||0),backgroundColor:'rgba(155,89,255,.7)',borderRadius:4},
+    {label:'Bônus',data:d.map(r=>r.apps?.bon||0),backgroundColor:'rgba(200,240,0,.5)',borderRadius:4},
+  ]},options:co});
 }
 
-// ─── CONFIG ────────────────────────────────────────────────
-function carregarConfig() {
-  document.getElementById('c-reserva-km').value  = config.reservaKm;
-  document.getElementById('c-preco-litro').value = config.precoLitro;
-  document.getElementById('c-kml').value         = config.kml;
-  document.getElementById('c-modelo').value      = config.modelo;
-  document.getElementById('f-preco-litro').placeholder = `padrão: ${config.precoLitro}`;
-  document.getElementById('f-kml').placeholder         = `padrão: ${config.kml}`;
+function loadCfg(){
+  document.getElementById('c-res').value=cfg.res;
+  document.getElementById('c-lit').value=cfg.lit;
+  document.getElementById('c-kml').value=cfg.kml;
+  document.getElementById('c-mod').value=cfg.mod;
+  document.getElementById('f-kml').placeholder='padrão: '+cfg.kml;
+  document.getElementById('f-lit').placeholder='padrão: '+cfg.lit;
 }
 
-function salvarConfig() {
-  config.reservaKm  = parseFloat(document.getElementById('c-reserva-km').value)  || 0.13;
-  config.precoLitro = parseFloat(document.getElementById('c-preco-litro').value) || 4.54;
-  config.kml        = parseFloat(document.getElementById('c-kml').value)          || 8.6;
-  config.modelo     = document.getElementById('c-modelo').value || 'Meu Carro';
-  localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
-  mostrarToast('⚙️ Configurações salvas!');
-  carregarConfig();
+function salvarCfg(){
+  cfg.res=parseFloat(document.getElementById('c-res').value)||0.13;
+  cfg.lit=parseFloat(document.getElementById('c-lit').value)||4.54;
+  cfg.kml=parseFloat(document.getElementById('c-kml').value)||8.6;
+  cfg.mod=document.getElementById('c-mod').value||'Meu Carro';
+  localStorage.setItem(CK,JSON.stringify(cfg));
+  loadCfg();
+  toast('⚙️ Config salva!');
 }
 
-function exportarDados() {
-  const blob = new Blob([JSON.stringify({ config, registros }, null, 2)], { type:'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `uberkm_${hoje()}.json`;
-  a.click();
+function exportar(){
+  const b=new Blob([JSON.stringify({cfg,regs},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);
+  a.download='uberkm_'+ts()+'.json';a.click();
 }
+
+function pf(id){return parseFloat(document.getElementById(id).value)||0;}
+function tx(id,v){document.getElementById(id).textContent=v;}
+function sm(arr,k){return arr.reduce((s,r)=>s+(r[k]||0),0);}
+function fm(v){return 'R$ '+v.toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
+function fd(s){const[y,m,d]=s.split('-');return`${d}/${m}`;}
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+function copts(){return{
+  responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{labels:{color:'#4a5568',font:{family:'Space Mono',size:9}}}},
+  scales:{
+    x:{ticks:{color:'#4a5568',font:{family:'Space Mono',size:8}},grid:{color:'#1d2330'}},
+    y:{ticks:{color:'#4a5568',font:{family:'Space Mono',size:8}},grid:{color:'#1d2330'}}
+  }
+};}
 </script>
 
 </body>
