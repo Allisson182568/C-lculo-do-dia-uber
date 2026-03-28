@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -14,159 +13,159 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap');
 
 html, body {
-background: #080a0e !important;
-color-scheme: dark;
+  background: #080a0e !important;
+  color-scheme: dark;
 }
 
 :root {
-–bg:       #080a0e;
-–s1:       #0f1218;
-–s2:       #161b24;
-–s3:       #1d2330;
-–border:   #232b38;
-–accent:   #c8f000;
-–orange:   #ff6b35;
-–blue:     #3db8ff;
-–uber:     #06c167;
-–nov99:    #f5a623;
-–indrive:  #9b59ff;
-–text:     #dde2ec;
-–muted:    #4a5568;
-–danger:   #ff4757;
-–success:  #00d68f;
-–radius:   14px;
+  --bg:       #080a0e;
+  --s1:       #0f1218;
+  --s2:       #161b24;
+  --s3:       #1d2330;
+  --border:   #232b38;
+  --accent:   #c8f000;
+  --orange:   #ff6b35;
+  --blue:     #3db8ff;
+  --uber:     #06c167;
+  --nov99:    #f5a623;
+  --indrive:  #9b59ff;
+  --text:     #dde2ec;
+  --muted:    #4a5568;
+  --danger:   #ff4757;
+  --success:  #00d68f;
+  --radius:   14px;
 }
 
-- { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
 body {
-background: var(–bg);
-color: var(–text);
-font-family: ‘Syne’, sans-serif;
-min-height: 100dvh;
-overflow-x: hidden;
-padding-bottom: env(safe-area-inset-bottom);
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 body::after {
-content:’’;
-position:fixed;
-inset:0;
-background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘0.03’/%3E%3C/svg%3E”);
-pointer-events:none;
-z-index:0;
-opacity:.4;
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:0;
+  opacity:.4;
 }
 
 .wrap {
-position:relative;
-z-index:1;
-max-width:640px;
-margin:0 auto;
-padding:20px 16px 100px;
+  position:relative;
+  z-index:1;
+  max-width:640px;
+  margin:0 auto;
+  padding:20px 16px 100px;
 }
 
 header {
-display:flex;
-align-items:flex-start;
-justify-content:space-between;
-margin-bottom:28px;
-padding-bottom:20px;
-border-bottom:1px solid var(–border);
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  margin-bottom:28px;
+  padding-bottom:20px;
+  border-bottom:1px solid var(--border);
 }
 
 .logo-eyebrow {
-font-family:‘Space Mono’,monospace;
-font-size:9px;
-letter-spacing:4px;
-color:var(–accent);
-text-transform:uppercase;
-margin-bottom:4px;
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  letter-spacing:4px;
+  color:var(--accent);
+  text-transform:uppercase;
+  margin-bottom:4px;
 }
 
 .logo-name {
-font-size:36px;
-font-weight:800;
-letter-spacing:-2px;
-line-height:1;
-color:var(–text);
+  font-size:36px;
+  font-weight:800;
+  letter-spacing:-2px;
+  line-height:1;
+  color:var(--text);
 }
 
-.logo-name em { color:var(–accent); font-style:normal; }
+.logo-name em { color:var(--accent); font-style:normal; }
 
 .header-meta {
-text-align:right;
-font-family:‘Space Mono’,monospace;
-font-size:10px;
-color:var(–muted);
-line-height:1.9;
+  text-align:right;
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  color:var(--muted);
+  line-height:1.9;
 }
 
 .tab-bar {
-display:flex;
-gap:3px;
-padding:4px;
-background:var(–s1);
-border:1px solid var(–border);
-border-radius:var(–radius);
-margin-bottom:24px;
-overflow-x:auto;
-scrollbar-width:none;
+  display:flex;
+  gap:3px;
+  padding:4px;
+  background:var(--s1);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  margin-bottom:24px;
+  overflow-x:auto;
+  scrollbar-width:none;
 }
 .tab-bar::-webkit-scrollbar { display:none; }
 
 .tab {
-flex:1;
-min-width:64px;
-padding:9px 4px;
-text-align:center;
-font-family:‘Space Mono’,monospace;
-font-size:9px;
-letter-spacing:1px;
-text-transform:uppercase;
-color:var(–muted);
-background:transparent;
-border:none;
-border-radius:10px;
-cursor:pointer;
-transition:all .2s;
-white-space:nowrap;
+  flex:1;
+  min-width:64px;
+  padding:9px 4px;
+  text-align:center;
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:var(--muted);
+  background:transparent;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  transition:all .2s;
+  white-space:nowrap;
 }
 
 .tab.active {
-background:var(–accent);
-color:#080a0e;
-font-weight:700;
+  background:var(--accent);
+  color:#080a0e;
+  font-weight:700;
 }
 
 .tab-content { display:none; }
 .tab-content.active { display:block; }
 
 .card {
-background:var(–s1);
-border:1px solid var(–border);
-border-radius:var(–radius);
-padding:20px;
-margin-bottom:14px;
-position:relative;
-overflow:hidden;
+  background:var(--s1);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px;
+  margin-bottom:14px;
+  position:relative;
+  overflow:hidden;
 }
 
-.card-accent { border-left:3px solid var(–accent); }
-.card-orange  { border-left:3px solid var(–orange); }
-.card-blue    { border-left:3px solid var(–blue); }
-.card-uber    { border-left:3px solid var(–uber); }
+.card-accent { border-left:3px solid var(--accent); }
+.card-orange  { border-left:3px solid var(--orange); }
+.card-blue    { border-left:3px solid var(--blue); }
+.card-uber    { border-left:3px solid var(--uber); }
 
 .card-title {
-font-family:‘Space Mono’,monospace;
-font-size:9px;
-letter-spacing:3px;
-color:var(–muted);
-text-transform:uppercase;
-margin-bottom:18px;
-display:flex;
-align-items:center;
-gap:8px;
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  letter-spacing:3px;
+  color:var(--muted);
+  text-transform:uppercase;
+  margin-bottom:18px;
+  display:flex;
+  align-items:center;
+  gap:8px;
 }
 
 .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
@@ -177,128 +176,128 @@ gap:8px;
 .field { display:flex; flex-direction:column; gap:5px; }
 
 .field label {
-font-family:‘Space Mono’,monospace;
-font-size:9px;
-letter-spacing:1px;
-color:var(–muted);
-text-transform:uppercase;
-display:flex;
-align-items:center;
-gap:6px;
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  letter-spacing:1px;
+  color:var(--muted);
+  text-transform:uppercase;
+  display:flex;
+  align-items:center;
+  gap:6px;
 }
 
 .chip {
-padding:2px 7px;
-border-radius:4px;
-font-size:8px;
-font-weight:700;
-letter-spacing:1px;
+  padding:2px 7px;
+  border-radius:4px;
+  font-size:8px;
+  font-weight:700;
+  letter-spacing:1px;
 }
-.chip-uber    { background:rgba(6,193,103,.15);  color:var(–uber); }
-.chip-99      { background:rgba(245,166,35,.15); color:var(–nov99); }
-.chip-indrive { background:rgba(155,89,255,.15); color:var(–indrive); }
-.chip-bonus   { background:rgba(200,240,0,.12);  color:var(–accent); }
+.chip-uber    { background:rgba(6,193,103,.15);  color:var(--uber); }
+.chip-99      { background:rgba(245,166,35,.15); color:var(--nov99); }
+.chip-indrive { background:rgba(155,89,255,.15); color:var(--indrive); }
+.chip-bonus   { background:rgba(200,240,0,.12);  color:var(--accent); }
 
 .field input {
-background:var(–s2) !important;
-border:1px solid var(–border);
-border-radius:10px;
-padding:12px 14px;
-color:var(–text) !important;
-font-family:‘Space Mono’,monospace;
-font-size:15px;
-outline:none;
-transition:border-color .2s, background .2s;
-width:100%;
--webkit-appearance:none;
-appearance:none;
-color-scheme:dark;
+  background:var(--s2) !important;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px 14px;
+  color:var(--text) !important;
+  font-family:'Space Mono',monospace;
+  font-size:15px;
+  outline:none;
+  transition:border-color .2s, background .2s;
+  width:100%;
+  -webkit-appearance:none;
+  appearance:none;
+  color-scheme:dark;
 }
 
-.field input:focus  { border-color:var(–accent) !important; background:var(–s3) !important; }
-.field input::placeholder { color:var(–muted) !important; opacity:1; }
-.field input:-webkit-autofill { -webkit-box-shadow:0 0 0 100px var(–s2) inset !important; -webkit-text-fill-color:var(–text) !important; }
+.field input:focus  { border-color:var(--accent) !important; background:var(--s3) !important; }
+.field input::placeholder { color:var(--muted) !important; opacity:1; }
+.field input:-webkit-autofill { -webkit-box-shadow:0 0 0 100px var(--s2) inset !important; -webkit-text-fill-color:var(--text) !important; }
 
 .field input.sum-field {
-border-color:rgba(200,240,0,.3) !important;
-color:var(–accent) !important;
-font-weight:700;
+  border-color:rgba(200,240,0,.3) !important;
+  color:var(--accent) !important;
+  font-weight:700;
 }
 
-.divider { border:none; border-top:1px solid var(–border); margin:16px 0; }
+.divider { border:none; border-top:1px solid var(--border); margin:16px 0; }
 
 .result-grid {
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:10px;
-margin-bottom:14px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-bottom:14px;
 }
 
 @media(max-width:400px) { .result-grid { grid-template-columns:1fr 1fr; } }
 
 .rbox {
-background:var(–s2);
-border:1px solid var(–border);
-border-radius:12px;
-padding:14px 10px;
-text-align:center;
+  background:var(--s2);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px 10px;
+  text-align:center;
 }
 
 .rbox-label {
-font-family:‘Space Mono’,monospace;
-font-size:8px;
-color:var(–muted);
-letter-spacing:2px;
-text-transform:uppercase;
-margin-bottom:8px;
-line-height:1.4;
+  font-family:'Space Mono',monospace;
+  font-size:8px;
+  color:var(--muted);
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:8px;
+  line-height:1.4;
 }
 
 .rbox-value {
-font-size:18px;
-font-weight:800;
-letter-spacing:-0.5px;
-line-height:1;
+  font-size:18px;
+  font-weight:800;
+  letter-spacing:-0.5px;
+  line-height:1;
 }
 
-.c-green   { color:var(–success); }
-.c-yellow  { color:var(–accent); }
-.c-orange  { color:var(–orange); }
-.c-blue    { color:var(–blue); }
-.c-red     { color:var(–danger); }
-.c-muted   { color:var(–muted); }
+.c-green   { color:var(--success); }
+.c-yellow  { color:var(--accent); }
+.c-orange  { color:var(--orange); }
+.c-blue    { color:var(--blue); }
+.c-red     { color:var(--danger); }
+.c-muted   { color:var(--muted); }
 
 .prog-wrap {
-background:var(–s2);
-border:1px solid var(–border);
-border-radius:12px;
-padding:14px;
-margin-top:4px;
+  background:var(--s2);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px;
+  margin-top:4px;
 }
 
 .prog-header {
-display:flex;
-justify-content:space-between;
-font-family:‘Space Mono’,monospace;
-font-size:9px;
-color:var(–muted);
-margin-bottom:10px;
-flex-wrap:wrap;
-gap:4px;
+  display:flex;
+  justify-content:space-between;
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  color:var(--muted);
+  margin-bottom:10px;
+  flex-wrap:wrap;
+  gap:4px;
 }
 
 .prog-track {
-height:6px;
-background:var(–border);
-border-radius:3px;
-overflow:hidden;
+  height:6px;
+  background:var(--border);
+  border-radius:3px;
+  overflow:hidden;
 }
 
 .prog-fill {
-height:100%;
-border-radius:3px;
-background:linear-gradient(90deg,var(–accent),var(–orange));
-transition:width .5s ease;
+  height:100%;
+  border-radius:3px;
+  background:linear-gradient(90deg,var(--accent),var(--orange));
+  transition:width .5s ease;
 }
 
 .app-bars { display:flex; flex-direction:column; gap:10px; }
@@ -306,118 +305,118 @@ transition:width .5s ease;
 .app-row { display:flex; align-items:center; gap:10px; }
 
 .app-row-label {
-font-family:‘Space Mono’,monospace;
-font-size:10px;
-font-weight:700;
-width:58px;
-flex-shrink:0;
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  font-weight:700;
+  width:58px;
+  flex-shrink:0;
 }
 
 .app-track {
-flex:1;
-height:7px;
-background:var(–border);
-border-radius:4px;
-overflow:hidden;
+  flex:1;
+  height:7px;
+  background:var(--border);
+  border-radius:4px;
+  overflow:hidden;
 }
 
 .app-fill {
-height:100%;
-border-radius:4px;
-transition:width .5s ease;
+  height:100%;
+  border-radius:4px;
+  transition:width .5s ease;
 }
 
 .app-row-val {
-font-family:‘Space Mono’,monospace;
-font-size:10px;
-width:74px;
-text-align:right;
-flex-shrink:0;
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  width:74px;
+  text-align:right;
+  flex-shrink:0;
 }
 
 .winner-pill {
-display:inline-flex;
-align-items:center;
-gap:6px;
-padding:6px 14px;
-border-radius:8px;
-font-family:‘Space Mono’,monospace;
-font-size:10px;
-font-weight:700;
-margin-top:14px;
-letter-spacing:.5px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 14px;
+  border-radius:8px;
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  font-weight:700;
+  margin-top:14px;
+  letter-spacing:.5px;
 }
 
 .hist-table {
-width:100%;
-border-collapse:collapse;
-font-family:‘Space Mono’,monospace;
-font-size:10px;
+  width:100%;
+  border-collapse:collapse;
+  font-family:'Space Mono',monospace;
+  font-size:10px;
 }
 
 .hist-table th {
-color:var(–muted);
-text-align:left;
-padding:8px 8px;
-border-bottom:1px solid var(–border);
-font-size:8px;
-letter-spacing:1px;
-text-transform:uppercase;
+  color:var(--muted);
+  text-align:left;
+  padding:8px 8px;
+  border-bottom:1px solid var(--border);
+  font-size:8px;
+  letter-spacing:1px;
+  text-transform:uppercase;
 }
 
 .hist-table td {
-padding:10px 8px;
-border-bottom:1px solid rgba(255,255,255,.03);
-vertical-align:middle;
-color:var(–text);
+  padding:10px 8px;
+  border-bottom:1px solid rgba(255,255,255,.03);
+  vertical-align:middle;
+  color:var(--text);
 }
 
 .hist-table tr:hover td { background:rgba(255,255,255,.02); }
 
 .pill {
-display:inline-block;
-padding:3px 9px;
-border-radius:5px;
-font-size:9px;
-font-weight:700;
+  display:inline-block;
+  padding:3px 9px;
+  border-radius:5px;
+  font-size:9px;
+  font-weight:700;
 }
 
-.pill-green { background:rgba(0,214,143,.12); color:var(–success); }
-.pill-red   { background:rgba(255,71,87,.12);  color:var(–danger); }
+.pill-green { background:rgba(0,214,143,.12); color:var(--success); }
+.pill-red   { background:rgba(255,71,87,.12);  color:var(--danger); }
 
 .del-btn {
-background:none;
-border:none;
-color:var(–danger);
-cursor:pointer;
-font-size:13px;
-opacity:.4;
-transition:opacity .2s;
-padding:4px;
+  background:none;
+  border:none;
+  color:var(--danger);
+  cursor:pointer;
+  font-size:13px;
+  opacity:.4;
+  transition:opacity .2s;
+  padding:4px;
 }
 .del-btn:hover { opacity:1; }
 
 .sum-grid {
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-margin-bottom:14px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:14px;
 }
 
 .sbox {
-background:var(–s2);
-border:1px solid var(–border);
-border-radius:12px;
-padding:14px;
+  background:var(--s2);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px;
 }
 
 .sbox-label {
-font-family:‘Space Mono’,monospace;
-font-size:8px;
-color:var(–muted);
-letter-spacing:2px;
-text-transform:uppercase;
-margin-bottom:6px;
+  font-family:'Space Mono',monospace;
+  font-size:8px;
+  color:var(--muted);
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:6px;
 }
 
 .sbox-value { font-size:18px; font-weight:800; }
@@ -425,109 +424,108 @@ margin-bottom:6px;
 .chart-wrap { position:relative; height:180px; margin-top:14px; }
 
 .period-row {
-display:flex;
-gap:6px;
-margin-bottom:16px;
+  display:flex;
+  gap:6px;
+  margin-bottom:16px;
 }
 
 .pbtn {
-padding:7px 16px;
-border-radius:8px;
-font-family:‘Space Mono’,monospace;
-font-size:9px;
-letter-spacing:1px;
-cursor:pointer;
-border:1px solid var(–border);
-background:transparent;
-color:var(–muted);
-transition:all .2s;
-text-transform:uppercase;
+  padding:7px 16px;
+  border-radius:8px;
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  letter-spacing:1px;
+  cursor:pointer;
+  border:1px solid var(--border);
+  background:transparent;
+  color:var(--muted);
+  transition:all .2s;
+  text-transform:uppercase;
 }
 
 .pbtn.active {
-background:var(–s2);
-border-color:var(–accent);
-color:var(–accent);
+  background:var(--s2);
+  border-color:var(--accent);
+  color:var(--accent);
 }
 
 .btn-primary {
-width:100%;
-padding:15px;
-background:var(–accent);
-color:#080a0e;
-border:none;
-border-radius:12px;
-font-family:‘Syne’,sans-serif;
-font-size:14px;
-font-weight:800;
-letter-spacing:1px;
-text-transform:uppercase;
-cursor:pointer;
-transition:all .2s;
-margin-top:6px;
+  width:100%;
+  padding:15px;
+  background:var(--accent);
+  color:#080a0e;
+  border:none;
+  border-radius:12px;
+  font-family:'Syne',sans-serif;
+  font-size:14px;
+  font-weight:800;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:all .2s;
+  margin-top:6px;
 }
 
 .btn-primary:active { transform:scale(.98); }
 
 .btn-ghost {
-width:100%;
-padding:13px;
-background:transparent;
-border:1px solid var(–border);
-color:var(–text);
-border-radius:12px;
-font-family:‘Syne’,sans-serif;
-font-size:13px;
-font-weight:700;
-cursor:pointer;
-transition:all .2s;
-margin-top:10px;
+  width:100%;
+  padding:13px;
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--text);
+  border-radius:12px;
+  font-family:'Syne',sans-serif;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .2s;
+  margin-top:10px;
 }
 
-.btn-ghost:hover { border-color:var(–accent); color:var(–accent); }
+.btn-ghost:hover { border-color:var(--accent); color:var(--accent); }
 
 .hint {
-font-family:‘Space Mono’,monospace;
-font-size:9px;
-color:var(–muted);
-line-height:1.8;
-margin-top:14px;
-padding:12px;
-background:var(–s2);
-border-radius:10px;
-border:1px solid var(–border);
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  color:var(--muted);
+  line-height:1.8;
+  margin-top:14px;
+  padding:12px;
+  background:var(--s2);
+  border-radius:10px;
+  border:1px solid var(--border);
 }
 
 .empty {
-text-align:center;
-padding:40px 20px;
-font-family:‘Space Mono’,monospace;
-font-size:10px;
-color:var(–muted);
-line-height:2.2;
+  text-align:center;
+  padding:40px 20px;
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  color:var(--muted);
+  line-height:2.2;
 }
 
 #toast {
-position:fixed;
-bottom:calc(24px + env(safe-area-inset-bottom));
-left:50%;
-transform:translateX(-50%) translateY(100px);
-background:var(–accent);
-color:#080a0e;
-font-family:‘Space Mono’,monospace;
-font-size:11px;
-font-weight:700;
-padding:12px 24px;
-border-radius:10px;
-z-index:999;
-transition:transform .3s cubic-bezier(.34,1.56,.64,1);
-letter-spacing:1px;
-white-space:nowrap;
+  position:fixed;
+  bottom:calc(24px + env(safe-area-inset-bottom));
+  left:50%;
+  transform:translateX(-50%) translateY(100px);
+  background:var(--accent);
+  color:#080a0e;
+  font-family:'Space Mono',monospace;
+  font-size:11px;
+  font-weight:700;
+  padding:12px 24px;
+  border-radius:10px;
+  z-index:999;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  letter-spacing:1px;
+  white-space:nowrap;
 }
 
 #toast.show { transform:translateX(-50%) translateY(0); }
 </style>
-
 </head>
 <body>
 
@@ -552,114 +550,109 @@ white-space:nowrap;
   </div>
 
   <!-- REGISTRAR -->
-
   <div id="tab-reg" class="tab-content active">
 
-```
-<div class="card card-uber">
-  <div class="card-title">💰 Ganhos por Plataforma</div>
-  <div class="grid2">
-    <div class="field">
-      <label><span class="chip chip-uber">UBER</span> Uber (R$)</label>
-      <input type="number" id="f-uber" inputmode="decimal" placeholder="0,00" oninput="somarGanhos()">
+    <div class="card card-uber">
+      <div class="card-title">💰 Ganhos por Plataforma</div>
+      <div class="grid2">
+        <div class="field">
+          <label><span class="chip chip-uber">UBER</span> Uber (R$)</label>
+          <input type="number" id="f-uber" inputmode="decimal" placeholder="0,00" oninput="somarGanhos()">
+        </div>
+        <div class="field">
+          <label><span class="chip chip-99">99</span> 99 (R$)</label>
+          <input type="number" id="f-99" inputmode="decimal" placeholder="0,00" oninput="somarGanhos()">
+        </div>
+        <div class="field">
+          <label><span class="chip chip-indrive">INDRIVE</span> inDrive (R$)</label>
+          <input type="number" id="f-ind" inputmode="decimal" placeholder="0,00" oninput="somarGanhos()">
+        </div>
+        <div class="field">
+          <label><span class="chip chip-bonus">BÔNUS</span> Bônus (R$)</label>
+          <input type="number" id="f-bon" inputmode="decimal" placeholder="0,00" oninput="somarGanhos()">
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="field">
+        <label>Total (R$)</label>
+        <input type="number" id="f-tot" class="sum-field" placeholder="soma automática" readonly>
+      </div>
+      <div id="rank-day" style="display:none;margin-top:16px;">
+        <div class="card-title" style="margin-bottom:12px;">🏆 Ranking do Dia</div>
+        <div class="app-bars" id="rank-day-bars"></div>
+        <div id="rank-day-winner"></div>
+      </div>
     </div>
-    <div class="field">
-      <label><span class="chip chip-99">99</span> 99 (R$)</label>
-      <input type="number" id="f-99" inputmode="decimal" placeholder="0,00" oninput="somarGanhos()">
-    </div>
-    <div class="field">
-      <label><span class="chip chip-indrive">INDRIVE</span> inDrive (R$)</label>
-      <input type="number" id="f-ind" inputmode="decimal" placeholder="0,00" oninput="somarGanhos()">
-    </div>
-    <div class="field">
-      <label><span class="chip chip-bonus">BÔNUS</span> Bônus (R$)</label>
-      <input type="number" id="f-bon" inputmode="decimal" placeholder="0,00" oninput="somarGanhos()">
-    </div>
-  </div>
-  <hr class="divider">
-  <div class="field">
-    <label>Total (R$)</label>
-    <input type="number" id="f-tot" class="sum-field" placeholder="soma automática" readonly>
-  </div>
-  <div id="rank-day" style="display:none;margin-top:16px;">
-    <div class="card-title" style="margin-bottom:12px;">🏆 Ranking do Dia</div>
-    <div class="app-bars" id="rank-day-bars"></div>
-    <div id="rank-day-winner"></div>
-  </div>
-</div>
 
-<div class="card card-accent">
-  <div class="card-title">📍 Dados do Dia</div>
-  <div class="grid2">
-    <div class="field">
-      <label>Data</label>
-      <input type="date" id="f-data">
+    <div class="card card-accent">
+      <div class="card-title">📍 Dados do Dia</div>
+      <div class="grid2">
+        <div class="field">
+          <label>Data</label>
+          <input type="date" id="f-data">
+        </div>
+        <div class="field">
+          <label>KM Rodados</label>
+          <input type="number" id="f-km" inputmode="decimal" placeholder="ex: 150" oninput="calcRT()">
+        </div>
+        <div class="field">
+          <label>Km/L (bordo)</label>
+          <input type="number" id="f-kml" inputmode="decimal" placeholder="padrão config" oninput="calcRT()">
+        </div>
+        <div class="field">
+          <label>Preço Litro (R$)</label>
+          <input type="number" id="f-lit" inputmode="decimal" placeholder="padrão config" oninput="calcRT()">
+        </div>
+        <div class="field">
+          <label>Horas Trabalhadas</label>
+          <input type="number" id="f-hrs" inputmode="decimal" placeholder="ex: 8" oninput="calcRT()">
+        </div>
+      </div>
     </div>
-    <div class="field">
-      <label>KM Rodados</label>
-      <input type="number" id="f-km" inputmode="decimal" placeholder="ex: 150" oninput="calcRT()">
-    </div>
-    <div class="field">
-      <label>Km/L (bordo)</label>
-      <input type="number" id="f-kml" inputmode="decimal" placeholder="padrão config" oninput="calcRT()">
-    </div>
-    <div class="field">
-      <label>Preço Litro (R$)</label>
-      <input type="number" id="f-lit" inputmode="decimal" placeholder="padrão config" oninput="calcRT()">
-    </div>
-    <div class="field">
-      <label>Horas Trabalhadas</label>
-      <input type="number" id="f-hrs" inputmode="decimal" placeholder="ex: 8" oninput="calcRT()">
-    </div>
-  </div>
-</div>
 
-<div class="card card-orange">
-  <div class="card-title">⚡ Resultado do Dia</div>
-  <div class="result-grid">
-    <div class="rbox">
-      <div class="rbox-label">Combustível</div>
-      <div class="rbox-value c-orange" id="r-comb">R$ 0</div>
+    <div class="card card-orange">
+      <div class="card-title">⚡ Resultado do Dia</div>
+      <div class="result-grid">
+        <div class="rbox">
+          <div class="rbox-label">Combustível</div>
+          <div class="rbox-value c-orange" id="r-comb">R$ 0</div>
+        </div>
+        <div class="rbox">
+          <div class="rbox-label">Reserva Manut.</div>
+          <div class="rbox-value c-yellow" id="r-manut">R$ 0</div>
+        </div>
+        <div class="rbox">
+          <div class="rbox-label">Líquido Real</div>
+          <div class="rbox-value c-green" id="r-liq">R$ 0</div>
+        </div>
+        <div class="rbox">
+          <div class="rbox-label">Custo / KM</div>
+          <div class="rbox-value c-blue" id="r-ckm">R$ 0,000</div>
+        </div>
+        <div class="rbox">
+          <div class="rbox-label">Ganho / Hora</div>
+          <div class="rbox-value c-green" id="r-hra">—</div>
+        </div>
+        <div class="rbox">
+          <div class="rbox-label">% Custo</div>
+          <div class="rbox-value c-yellow" id="r-pct">0%</div>
+        </div>
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-header">
+          <span>Distribuição dos Ganhos</span>
+          <span id="prog-detail">—</span>
+        </div>
+        <div class="prog-track">
+          <div class="prog-fill" id="prog-fill" style="width:0%"></div>
+        </div>
+      </div>
     </div>
-    <div class="rbox">
-      <div class="rbox-label">Reserva Manut.</div>
-      <div class="rbox-value c-yellow" id="r-manut">R$ 0</div>
-    </div>
-    <div class="rbox">
-      <div class="rbox-label">Líquido Real</div>
-      <div class="rbox-value c-green" id="r-liq">R$ 0</div>
-    </div>
-    <div class="rbox">
-      <div class="rbox-label">Custo / KM</div>
-      <div class="rbox-value c-blue" id="r-ckm">R$ 0,000</div>
-    </div>
-    <div class="rbox">
-      <div class="rbox-label">Ganho / Hora</div>
-      <div class="rbox-value c-green" id="r-hra">—</div>
-    </div>
-    <div class="rbox">
-      <div class="rbox-label">% Custo</div>
-      <div class="rbox-value c-yellow" id="r-pct">0%</div>
-    </div>
-  </div>
-  <div class="prog-wrap">
-    <div class="prog-header">
-      <span>Distribuição dos Ganhos</span>
-      <span id="prog-detail">—</span>
-    </div>
-    <div class="prog-track">
-      <div class="prog-fill" id="prog-fill" style="width:0%"></div>
-    </div>
-  </div>
-</div>
 
-<button class="btn-primary" onclick="salvar()">Salvar Dia →</button>
-```
-
+    <button class="btn-primary" onclick="salvar()">Salvar Dia →</button>
   </div>
 
   <!-- HISTÓRICO -->
-
   <div id="tab-hist" class="tab-content">
     <div class="card card-accent">
       <div class="card-title">📋 Registros</div>
@@ -668,7 +661,6 @@ white-space:nowrap;
   </div>
 
   <!-- RELATÓRIO -->
-
   <div id="tab-rel" class="tab-content">
     <div class="period-row">
       <button class="pbtn active" onclick="setPer('semana',this,'rel')">Semana</button>
@@ -687,7 +679,6 @@ white-space:nowrap;
   </div>
 
   <!-- APPS -->
-
   <div id="tab-apps" class="tab-content">
     <div class="period-row">
       <button class="pbtn active" onclick="setPer('semana',this,'apps')">Semana</button>
@@ -707,7 +698,6 @@ white-space:nowrap;
   </div>
 
   <!-- CONFIG -->
-
   <div id="tab-cfg" class="tab-content">
     <div class="card card-accent">
       <div class="card-title">⚙️ Manutenção & Combustível</div>
@@ -981,6 +971,5 @@ function copts(){return{
   }
 };}
 </script>
-
 </body>
 </html>
