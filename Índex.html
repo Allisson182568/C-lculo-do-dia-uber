@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UberKM — Reserva de Manutenção</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&display=swap');
+
+  :root {
+    --bg: #0a0c0f;
+    --surface: #111318;
+    --surface2: #181c23;
+    --border: #1f2530;
+    --accent: #e8ff47;
+    --accent2: #ff6b35;
+    --accent3: #47c9ff;
+    --text: #e8eaf0;
+    --muted: #5a6070;
+    --danger: #ff4757;
+    --success: #2ecc71;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* GRID BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(232,255,71,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232,255,71,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px 16px 80px;
+  }
+
+  /* HEADER */
+  header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .logo-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .logo-title {
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+
+  .logo-title span { color: var(--accent); }
+
+  .header-date {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 7px;
+    transition: all .2s;
+    border: none;
+    background: transparent;
+    text-transform: uppercase;
+  }
+
+  .tab.active {
+    background: var(--accent);
+    color: #0a0c0f;
+    font-weight: 700;
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--accent);
+  }
+
+  .card.accent2::before { background: var(--accent2); }
+  .card.accent3::before { background: var(--accent3); }
+
+  .card-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  /* FORM GRID */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  @media (max-width: 560px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .logo-title { font-size: 24px; }
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .field label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .field input, .field select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    outline: none;
+    transition: border-color .2s;
+    width: 100%;
+  }
+
+  .field input:focus, .field select:focus {
+    border-color: var(--accent);
+  }
+
+  .field input::placeholder { color: var(--muted); }
+
+  /* CONFIG CARD */
+  .config-hint {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 12px;
+    line-height: 1.6;
+  }
+
+  /* RESULTS */
+  .result-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 560px) { .result-grid { grid-template-columns: 1fr 1fr; } }
+
+  .result-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .result-box .r-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .result-box .r-value {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -1px;
+  }
+
+  .r-value.green { color: var(--success); }
+  .r-value.yellow { color: var(--accent); }
+  .r-value.orange { color: var(--accent2); }
+  .r-value.blue { color: var(--accent3); }
+  .r-value.red { color: var(--danger); }
+
+  /* RESERVE BAR */
+  .reserve-bar-wrap {
+    margin-top: 16px;
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .bar-track {
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width .6s ease;
+  }
+
+  /* BTN */
+  .btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: #0a0c0f;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all .2s;
+    margin-top: 4px;
+  }
+
+  .btn:hover { opacity: .85; transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+
+  .btn.secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  /* HISTORY TABLE */
+  .history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+  }
+
+  .history-table th {
+    color: var(--muted);
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    letter-spacing: 1px;
+    font-size: 9px;
+    text-transform: uppercase;
+  }
+
+  .history-table td {
+    padding: 10px 10px;
+    border-bottom: 1px solid rgba(255,255,255,.04);
+    color: var(--text);
+  }
+
+  .history-table tr:hover td { background: rgba(255,255,255,.02); }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .badge-green { background: rgba(46,204,113,.15); color: var(--success); }
+  .badge-red   { background: rgba(255,71,87,.15); color: var(--danger); }
+
+  /* SUMMARY GRID */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .sum-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+
+  .sum-box .s-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .sum-box .s-value {
+    font-size: 20px;
+    font-weight: 800;
+  }
+
+  /* CHART */
+  .chart-wrap {
+    position: relative;
+    height: 200px;
+    margin-top: 16px;
+  }
+
+  /* TOAST */
+  #toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--accent);
+    color: #0a0c0f;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 12px 24px;
+    border-radius: 8px;
+    z-index: 100;
+    transition: transform .3s ease;
+    letter-spacing: 1px;
+  }
+
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* DELETE BTN */
+  .del-btn {
+    background: none;
+    border: none;
+    color: var(--danger);
+    cursor: pointer;
+    font-size: 12px;
+    opacity: .5;
+    transition: opacity .2s;
+  }
+  .del-btn:hover { opacity: 1; }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 2;
+  }
+
+  .period-selector {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  .period-btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    transition: all .2s;
+    text-transform: uppercase;
+  }
+
+  .period-btn.active {
+    background: var(--surface2);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .section-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+<div id="toast">✓ Dia registrado!</div>
+
+<div class="wrapper">
+  <header>
+    <div class="logo">
+      <span class="logo-tag">// motorista</span>
+      <h1 class="logo-title">Uber<span>KM</span></h1>
+    </div>
+    <div class="header-date" id="headerDate"></div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('registro')">Registrar Dia</button>
+    <button class="tab" onclick="switchTab('historico')">Histórico</button>
+    <button class="tab" onclick="switchTab('relatorio')">Relatório</button>
+    <button class="tab" onclick="switchTab('config')">Config</button>
+  </div>
+
+  <!-- TAB: REGISTRO -->
+  <div id="tab-registro" class="tab-content active">
+
+    <div class="card">
+      <div class="card-label">📍 Dados do Dia</div>
+      <div class="form-grid">
+        <div class="field">
+          <label>Data</label>
+          <input type="date" id="f-data">
+        </div>
+        <div class="field">
+          <label>KM Rodados</label>
+          <input type="number" id="f-km" placeholder="ex: 180" step="0.1">
+        </div>
+        <div class="field">
+          <label>Ganhos Brutos (R$)</label>
+          <input type="number" id="f-ganhos" placeholder="ex: 320.00" step="0.01">
+        </div>
+        <div class="field">
+          <label>Km/L (computador de bordo)</label>
+          <input type="number" id="f-kml" placeholder="ex: 12.5" step="0.1">
+        </div>
+        <div class="field">
+          <label>Preço do Litro (R$)</label>
+          <input type="number" id="f-preco-litro" placeholder="ex: 6.19" step="0.01">
+        </div>
+        <div class="field">
+          <label>Horas Trabalhadas</label>
+          <input type="number" id="f-horas" placeholder="ex: 8" step="0.5">
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULTADO EM TEMPO REAL -->
+    <div class="card accent2" id="resultado-card">
+      <div class="card-label">⚡ Resultado do Dia</div>
+      <div class="result-grid">
+        <div class="result-box">
+          <div class="r-label">Combustível</div>
+          <div class="r-value orange" id="r-combustivel">R$ 0,00</div>
+        </div>
+        <div class="result-box">
+          <div class="r-label">Reserva Manutenção</div>
+          <div class="r-value yellow" id="r-manutencao">R$ 0,00</div>
+        </div>
+        <div class="result-box">
+          <div class="r-label">Líquido Real</div>
+          <div class="r-value green" id="r-liquido">R$ 0,00</div>
+        </div>
+        <div class="result-box">
+          <div class="r-label">Custo/KM</div>
+          <div class="r-value blue" id="r-custokm">R$ 0,00</div>
+        </div>
+        <div class="result-box">
+          <div class="r-label">Ganho/Hora</div>
+          <div class="r-value green" id="r-horakm">R$ 0,00</div>
+        </div>
+        <div class="result-box">
+          <div class="r-label">% Reserva/Ganhos</div>
+          <div class="r-value yellow" id="r-perc">0%</div>
+        </div>
+      </div>
+
+      <div class="reserve-bar-wrap">
+        <div class="bar-label">
+          <span>Distribuição dos Ganhos</span>
+          <span id="bar-detail">—</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill" id="bar-fill" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn" onclick="salvarDia()">Salvar Dia →</button>
+  </div>
+
+  <!-- TAB: HISTÓRICO -->
+  <div id="tab-historico" class="tab-content">
+    <div class="card">
+      <div class="card-label">📋 Registros</div>
+      <div id="tabela-historico"></div>
+    </div>
+  </div>
+
+  <!-- TAB: RELATÓRIO -->
+  <div id="tab-relatorio" class="tab-content">
+    <div class="period-selector">
+      <button class="period-btn active" onclick="setPeriod('semana', this)">Semana</button>
+      <button class="period-btn" onclick="setPeriod('mes', this)">Mês</button>
+      <button class="period-btn" onclick="setPeriod('total', this)">Total</button>
+    </div>
+
+    <div class="summary-grid" id="summary-grid"></div>
+
+    <div class="card">
+      <div class="card-label">📈 Ganhos vs Reserva vs Combustível</div>
+      <div class="chart-wrap">
+        <canvas id="chart-main"></canvas>
+      </div>
+    </div>
+
+    <div class="card accent3">
+      <div class="card-label">🏁 KM Rodados</div>
+      <div class="chart-wrap">
+        <canvas id="chart-km"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: CONFIG -->
+  <div id="tab-config" class="tab-content">
+    <div class="card">
+      <div class="card-label">⚙️ Configurações de Manutenção</div>
+      <div class="form-grid">
+        <div class="field">
+          <label>Reserva por KM (R$)</label>
+          <input type="number" id="c-reserva-km" placeholder="ex: 0.12" step="0.01">
+        </div>
+        <div class="field">
+          <label>Preço padrão do Litro (R$)</label>
+          <input type="number" id="c-preco-litro" placeholder="ex: 6.19" step="0.01">
+        </div>
+        <div class="field">
+          <label>KM/L padrão</label>
+          <input type="number" id="c-kml" placeholder="ex: 12.5" step="0.1">
+        </div>
+        <div class="field">
+          <label>Modelo do Carro</label>
+          <input type="text" id="c-modelo" placeholder="ex: Ônix 2024">
+        </div>
+      </div>
+      <p class="config-hint">
+        💡 A reserva por KM cobre: troca de óleo, pneus, freios, filtros e revisões.<br>
+        Sugestão para carros populares: R$ 0,10 a R$ 0,15/km.<br>
+        Para calcular o seu: (custo anual de manutenção) ÷ (km/ano).
+      </p>
+    </div>
+
+    <button class="btn" onclick="salvarConfig()">Salvar Configurações →</button>
+    <br><br>
+    <button class="btn secondary" onclick="exportarDados()">↓ Exportar Dados (JSON)</button>
+  </div>
+</div>
+
+<script>
+// ─── ESTADO ───────────────────────────────────────────────
+const STORAGE_KEY = 'uberkm_registros_v2';
+const CONFIG_KEY  = 'uberkm_config_v2';
+
+let registros = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+let config    = JSON.parse(localStorage.getItem(CONFIG_KEY)  || 'null') || {
+  reservaKm: 0.12,
+  precoLitro: 6.19,
+  kml: 12.5,
+  modelo: 'Meu Carro'
+};
+
+let chartMain = null;
+let chartKm   = null;
+let periodoAtual = 'semana';
+
+// ─── INIT ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // data de hoje
+  document.getElementById('f-data').value = hoje();
+  atualizarHeaderDate();
+  carregarConfig();
+
+  // listeners tempo real
+  ['f-km','f-ganhos','f-kml','f-preco-litro','f-horas'].forEach(id => {
+    document.getElementById(id).addEventListener('input', calcularTempReal);
+  });
+
+  carregarHistorico();
+  renderRelatorio();
+});
+
+function hoje() {
+  return new Date().toISOString().slice(0,10);
+}
+
+function atualizarHeaderDate() {
+  const d = new Date();
+  const opts = { weekday:'long', day:'2-digit', month:'long', year:'numeric' };
+  document.getElementById('headerDate').innerHTML =
+    d.toLocaleDateString('pt-BR', opts).replace(', ', '<br>');
+}
+
+// ─── TABS ──────────────────────────────────────────────────
+function switchTab(nome) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-'+nome).classList.add('active');
+  event.target.classList.add('active');
+
+  if (nome === 'historico') carregarHistorico();
+  if (nome === 'relatorio') renderRelatorio();
+}
+
+// ─── CÁLCULO TEMPO REAL ────────────────────────────────────
+function calcularTempReal() {
+  const km     = parseFloat(document.getElementById('f-km').value) || 0;
+  const ganhos = parseFloat(document.getElementById('f-ganhos').value) || 0;
+  const kml    = parseFloat(document.getElementById('f-kml').value) || config.kml;
+  const litro  = parseFloat(document.getElementById('f-preco-litro').value) || config.precoLitro;
+  const horas  = parseFloat(document.getElementById('f-horas').value) || 0;
+
+  const combustivel = km > 0 && kml > 0 ? (km / kml) * litro : 0;
+  const manutencao  = km * config.reservaKm;
+  const liquido     = ganhos - combustivel - manutencao;
+  const custokm     = km > 0 ? (combustivel + manutencao) / km : 0;
+  const ganhoHora   = horas > 0 ? liquido / horas : 0;
+  const perc        = ganhos > 0 ? ((combustivel + manutencao) / ganhos * 100) : 0;
+
+  set('r-combustivel', fmt(combustivel));
+  set('r-manutencao',  fmt(manutencao));
+  set('r-liquido',     fmt(liquido));
+  set('r-custokm',     'R$ ' + custokm.toFixed(3).replace('.',','));
+  set('r-horakm',      horas > 0 ? fmt(ganhoHora) : '—');
+  set('r-perc',        perc.toFixed(1) + '%');
+
+  document.getElementById('r-liquido').className =
+    'r-value ' + (liquido >= 0 ? 'green' : 'red');
+
+  // barra
+  const pct = Math.min(perc, 100);
+  document.getElementById('bar-fill').style.width = pct + '%';
+  document.getElementById('bar-detail').textContent =
+    ganhos > 0
+      ? `${fmt(combustivel)} comb + ${fmt(manutencao)} manutenção = ${fmt(combustivel+manutencao)} custo`
+      : '—';
+}
+
+function set(id, txt) { document.getElementById(id).textContent = txt; }
+
+function fmt(val) {
+  return 'R$ ' + val.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
+// ─── SALVAR DIA ────────────────────────────────────────────
+function salvarDia() {
+  const data   = document.getElementById('f-data').value;
+  const km     = parseFloat(document.getElementById('f-km').value);
+  const ganhos = parseFloat(document.getElementById('f-ganhos').value);
+  const kml    = parseFloat(document.getElementById('f-kml').value) || config.kml;
+  const litro  = parseFloat(document.getElementById('f-preco-litro').value) || config.precoLitro;
+  const horas  = parseFloat(document.getElementById('f-horas').value) || 0;
+
+  if (!data || !km || !ganhos) {
+    alert('Preencha ao menos: data, km rodados e ganhos.'); return;
+  }
+
+  const combustivel = (km / kml) * litro;
+  const manutencao  = km * config.reservaKm;
+  const liquido     = ganhos - combustivel - manutencao;
+
+  const reg = { data, km, ganhos, kml, litro, horas, combustivel, manutencao, liquido };
+
+  // substitui se já existe o dia
+  const idx = registros.findIndex(r => r.data === data);
+  if (idx >= 0) registros[idx] = reg;
+  else registros.push(reg);
+
+  registros.sort((a,b) => a.data.localeCompare(b.data));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
+
+  mostrarToast();
+}
+
+function mostrarToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ─── HISTÓRICO ─────────────────────────────────────────────
+function carregarHistorico() {
+  const el = document.getElementById('tabela-historico');
+  if (!registros.length) {
+    el.innerHTML = '<div class="empty-state">Nenhum dia registrado ainda.<br>Vá em "Registrar Dia" e salve o primeiro.</div>';
+    return;
+  }
+
+  const sorted = [...registros].reverse();
+  el.innerHTML = `
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>KM</th>
+          <th>Ganhos</th>
+          <th>Comb.</th>
+          <th>Manutenção</th>
+          <th>Líquido</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        ${sorted.map(r => `
+          <tr>
+            <td>${fmtData(r.data)}</td>
+            <td>${r.km} km</td>
+            <td>${fmt(r.ganhos)}</td>
+            <td>${fmt(r.combustivel)}</td>
+            <td>${fmt(r.manutencao)}</td>
+            <td>
+              <span class="badge ${r.liquido >= 0 ? 'badge-green' : 'badge-red'}">
+                ${fmt(r.liquido)}
+              </span>
+            </td>
+            <td>
+              <button class="del-btn" onclick="deletarDia('${r.data}')">✕</button>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>`;
+}
+
+function fmtData(str) {
+  const [y,m,d] = str.split('-');
+  return `${d}/${m}/${y}`;
+}
+
+function deletarDia(data) {
+  if (!confirm('Remover o registro de ' + fmtData(data) + '?')) return;
+  registros = registros.filter(r => r.data !== data);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
+  carregarHistorico();
+}
+
+// ─── RELATÓRIO ─────────────────────────────────────────────
+function setPeriod(p, btn) {
+  periodoAtual = p;
+  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderRelatorio();
+}
+
+function filtrarRegistros(periodo) {
+  const agora = new Date();
+  return registros.filter(r => {
+    const d = new Date(r.data + 'T12:00:00');
+    if (periodo === 'semana') {
+      const diff = (agora - d) / (1000*60*60*24);
+      return diff <= 7;
+    }
+    if (periodo === 'mes') {
+      return d.getMonth() === agora.getMonth() && d.getFullYear() === agora.getFullYear();
+    }
+    return true;
+  });
+}
+
+function renderRelatorio() {
+  const dados = filtrarRegistros(periodoAtual);
+
+  const totGanhos   = dados.reduce((s,r) => s + r.ganhos, 0);
+  const totComb     = dados.reduce((s,r) => s + r.combustivel, 0);
+  const totManut    = dados.reduce((s,r) => s + r.manutencao, 0);
+  const totLiquido  = dados.reduce((s,r) => s + r.liquido, 0);
+  const totKm       = dados.reduce((s,r) => s + r.km, 0);
+  const totHoras    = dados.reduce((s,r) => s + (r.horas||0), 0);
+
+  document.getElementById('summary-grid').innerHTML = `
+    <div class="sum-box">
+      <div class="s-label">Ganhos Brutos</div>
+      <div class="s-value" style="color:var(--text)">${fmt(totGanhos)}</div>
+    </div>
+    <div class="sum-box">
+      <div class="s-label">Líquido Real</div>
+      <div class="s-value" style="color:${totLiquido>=0?'var(--success)':'var(--danger)'}">${fmt(totLiquido)}</div>
+    </div>
+    <div class="sum-box">
+      <div class="s-label">Reserva Manutenção</div>
+      <div class="s-value" style="color:var(--accent)">${fmt(totManut)}</div>
+    </div>
+    <div class="sum-box">
+      <div class="s-label">Combustível</div>
+      <div class="s-value" style="color:var(--accent2)">${fmt(totComb)}</div>
+    </div>
+    <div class="sum-box">
+      <div class="s-label">KM Total</div>
+      <div class="s-value" style="color:var(--accent3)">${totKm.toFixed(0)} km</div>
+    </div>
+    <div class="sum-box">
+      <div class="s-label">Dias Registrados</div>
+      <div class="s-value" style="color:var(--muted)">${dados.length}</div>
+    </div>
+  `;
+
+  renderCharts(dados);
+}
+
+function renderCharts(dados) {
+  const labels = dados.map(r => fmtData(r.data));
+  const ganhos = dados.map(r => r.ganhos);
+  const manut  = dados.map(r => r.manutencao);
+  const comb   = dados.map(r => r.combustivel);
+  const kms    = dados.map(r => r.km);
+
+  const opts = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { labels: { color: '#5a6070', font: { family: 'Space Mono', size: 9 } } } },
+    scales: {
+      x: { ticks: { color: '#5a6070', font: { family:'Space Mono', size:8 } }, grid: { color: '#1f2530' } },
+      y: { ticks: { color: '#5a6070', font: { family:'Space Mono', size:8 } }, grid: { color: '#1f2530' } }
+    }
+  };
+
+  if (chartMain) chartMain.destroy();
+  chartMain = new Chart(document.getElementById('chart-main'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Ganhos', data: ganhos, backgroundColor: 'rgba(232,255,71,.7)', borderRadius: 4 },
+        { label: 'Manutenção', data: manut, backgroundColor: 'rgba(255,107,53,.7)', borderRadius: 4 },
+        { label: 'Combustível', data: comb, backgroundColor: 'rgba(71,201,255,.5)', borderRadius: 4 },
+      ]
+    },
+    options: { ...opts, scales: { ...opts.scales, y: { ...opts.scales.y, stacked: false } } }
+  });
+
+  if (chartKm) chartKm.destroy();
+  chartKm = new Chart(document.getElementById('chart-km'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'KM',
+        data: kms,
+        borderColor: 'rgba(71,201,255,1)',
+        backgroundColor: 'rgba(71,201,255,.1)',
+        fill: true,
+        tension: .3,
+        pointBackgroundColor: 'var(--accent3)',
+        pointRadius: 4,
+      }]
+    },
+    options: opts
+  });
+}
+
+// ─── CONFIG ────────────────────────────────────────────────
+function carregarConfig() {
+  document.getElementById('c-reserva-km').value  = config.reservaKm;
+  document.getElementById('c-preco-litro').value = config.precoLitro;
+  document.getElementById('c-kml').value          = config.kml;
+  document.getElementById('c-modelo').value       = config.modelo;
+
+  // preencher campos do form com defaults
+  document.getElementById('f-preco-litro').placeholder = `padrão: ${config.precoLitro}`;
+  document.getElementById('f-kml').placeholder          = `padrão: ${config.kml}`;
+}
+
+function salvarConfig() {
+  config.reservaKm  = parseFloat(document.getElementById('c-reserva-km').value) || 0.12;
+  config.precoLitro = parseFloat(document.getElementById('c-preco-litro').value) || 6.19;
+  config.kml        = parseFloat(document.getElementById('c-kml').value) || 12.5;
+  config.modelo     = document.getElementById('c-modelo').value || 'Meu Carro';
+  localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+  mostrarToast();
+  document.getElementById('toast').textContent = '⚙️ Configurações salvas!';
+  setTimeout(() => document.getElementById('toast').textContent = '✓ Dia registrado!', 2600);
+}
+
+// ─── EXPORT ────────────────────────────────────────────────
+function exportarDados() {
+  const blob = new Blob([JSON.stringify({ config, registros }, null, 2)], { type:'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `uberkm_${hoje()}.json`;
+  a.click();
+}
+</script>
+</body>
+</html>
